@@ -1,108 +1,152 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Hasil Penilaian Karyawan</title>
-    <style>
-        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
-        h2 { margin-bottom: 0; }
-        .info { margin-bottom: 20px; }
-        .info p { margin: 2px 0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
-        th { background-color: #f2f2f2; }
+	<meta charset="UTF-8">
+	<title>Laporan KPI Tahunan</title>
+	<style>
+		body {
+			font-family: DejaVu Sans, sans-serif;
+			font-size: 12px;
+		}
 
-        /* Petunjuk kecil */
-        .petunjuk { 
-            margin-top: 20px; 
-            font-size: 10px; 
-            width: 50%; 
-        }
-        .petunjuk h4 { margin-bottom: 5px; font-size: 11px; }
-        .petunjuk table { width: 100%; border-collapse: collapse; }
-        .petunjuk th, .petunjuk td { border: 1px solid #000; padding: 4px; text-align: center; }
+		h3 {
+			text-align: center;
+			text-transform: uppercase;
+			margin-bottom: 5px;
+		}
 
-        /* Tanda tangan */
-        .signature {
-            width: 100%;
-            margin-top: 40px;
-            text-align: right;
-            font-size: 12px;
-        }
-        .signature .space { margin-top: 60px; }
-    </style>
+		.info {
+			margin-bottom: 15px;
+		}
+
+		.info p {
+			margin: 2px 0;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 10px;
+		}
+
+		th,
+		td {
+			border: 1px solid #000;
+			padding: 6px;
+			text-align: center;
+		}
+
+		th {
+			background-color: #f2f2f2;
+		}
+
+		.kategori {
+			margin-top: 20px;
+			width: 50%;
+		}
+
+		.kategori th,
+		.kategori td {
+			text-align: center;
+		}
+
+		.signature {
+			width: 100%;
+			margin-top: 40px;
+			text-align: right;
+		}
+	</style>
 </head>
+
 <body>
-    <h2>Hasil Penilaian Karyawan</h2>
+	<h3>LAPORAN PENCAPAIAN POIN KPI RATA-RATA<br>TAHUNAN KARYAWAN</h3>
 
-    <div class="info">
-        <p><strong>Divisi:</strong> {{ $divisi ?? 'Semua Divisi' }}</p>
-        <p><strong>Tahun:</strong> 
-            @if($tahunMulai && $tahunAkhir)
-                {{ $tahunMulai }} - {{ $tahunAkhir }}
-            @elseif($tahunMulai)
-                {{ $tahunMulai }}
-            @else
-                Semua Tahun
-            @endif
-        </p>
-    </div>
+	<div class="info">
+		<p><strong>Divisi :</strong> {{ $divisi ?? 'Semua Divisi' }}</p>
+		<p><strong>Periode :</strong>
+			@if($tahunMulai && $tahunAkhir)
+			{{ $tahunMulai }} - {{ $tahunAkhir }}
+			@elseif($tahunMulai)
+			{{ $tahunMulai }}
+			@else
+			Semua Tahun
+			@endif
+		</p>
+	</div>
 
-    {{-- Tabel Hasil --}}
-    <table>
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>NIK</th>
-                <th>Jabatan</th>
-                <th>Divisi</th>
-                <th>Rata-rata Skor</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($results as $res)
-                <tr>
-                    <td>{{ $res->name }}</td>
-                    <td>{{ $res->nik }}</td>
-                    <td>{{ $res->jabatan }}</td>
-                    <td>{{ $res->divisi }}</td>
-                    <td>{{ number_format($res->avg_score, 2) }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" style="text-align: center; color: #777;">
-                        Belum ada hasil penilaian.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+	{{-- Tabel Hasil --}}
+	<table>
+		<thead>
+			<tr>
+				<th>No</th>
+				<th>Nama</th>
+				<th>NIK</th>
+				<th>Jabatan</th>
+				<th>Rata-rata Poin KPI</th>
+				<th>Kategori</th>
+			</tr>
+		</thead>
+		<tbody>
+			@forelse($results as $i => $res)
+			<tr>
+				<td>{{ $i+1 }}</td>
+				<td>{{ $res->name }}</td>
+				<td>{{ $res->nik }}</td>
+				<td>{{ $res->jabatan }}</td>
+				<td>{{ number_format($res->avg_score, 2) }}</td>
+				<td>{{ $res->kategori }}</td>
+			</tr>
+			@empty
+			<tr>
+				<td colspan="6" style="text-align: center; color: #777;">
+					Belum ada hasil penilaian.
+				</td>
+			</tr>
+			@endforelse
+		</tbody>
+	</table>
 
-    {{-- Petunjuk Nilai --}}
-    <div class="petunjuk">
-        <h4>Petunjuk Nilai</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nilai</th>
-                    <th>Keterangan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>5</td><td>Sangat Baik</td></tr>
-                <tr><td>4</td><td>Baik</td></tr>
-                <tr><td>3</td><td>Cukup</td></tr>
-                <tr><td>2</td><td>Kurang</td></tr>
-                <tr><td>1</td><td>Sangat Kurang</td></tr>
-            </tbody>
-        </table>
-    </div>
+	{{-- Kategori Poin --}}
+	<table class="kategori" border="1">
+		<thead>
+			<tr>
+				<th>Kategori</th>
+				<th>Range Point KPI</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>A</td>
+				<td>90 - 100</td>
+			</tr>
+			<tr>
+				<td>B</td>
+				<td>80 - 89</td>
+			</tr>
+			<tr>
+				<td>C</td>
+				<td>70 - 79</td>
+			</tr>
+			<tr>
+				<td>D</td>
+				<td>60 - 69</td>
+			</tr>
+			<tr>
+				<td>E</td>
+				<td>
+					< 59</td>
+			</tr>
+		</tbody>
+	</table>
 
-    {{-- Tanda Tangan --}}
-    <div class="signature">
-        <p>Denpasar, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</p>
-        <p>Hormat Kami,<br>HRD</p>
-        <div class="space">__________________________</div>
-    </div>
+	{{-- Tanda Tangan --}}
+	<div class="signature">
+		<p>Tanggal : {{ \Carbon\Carbon::now()->format('d F Y') }}</p>
+		<p>Dibuat Oleh,</p>
+		<br><br><br>
+		<p><u>HRM</u></p>
+	</div>
 </body>
+
 </html>

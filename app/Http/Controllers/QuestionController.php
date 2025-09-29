@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Question;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class QuestionController extends Controller
@@ -115,46 +116,61 @@ class QuestionController extends Controller
 
     // Proses submit form
     public function answer(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'nik' => 'required|string|max:50',
-            'jabatan' => 'required|string|max:100',
-            'divisi' => 'required|string|max:100',
-            'answers' => 'required|array',
-        ]);
+	{
+		$request->validate([
+			'name' => 'required|string|max:255',
+			'nik' => 'required|string|max:50',
+			'jabatan' => 'required|string|max:100',
+			'divisi' => 'required|string|max:100',
+			'answers' => 'required|array',
+		]);
 
-        // Ambil pertanyaan (harus sama dengan showQuestion)
-        $questions = $this->getQuestions();
+		// 🔹 Ambil pertanyaan (harus sama dengan showQuestion)
+		$questions = $this->getQuestions();
 
-        $totalScore = 0;
-        $answersWithScore = [];
+		$totalScore = 0;
+		$answersWithScore = [];
 
-        foreach ($request->answers as $qIndex => $choice) {
-            $score = $questions[$qIndex]['options'][$choice]['score'] ?? 0;
-            $answersWithScore[$qIndex] = [
-                'choice' => $choice,
-                'text' => $questions[$qIndex]['options'][$choice]['text'],
-                'score' => $score,
-            ];
-            $totalScore += $score;
-        }
+		foreach ($request->answers as $qIndex => $choice) {
+			$score = $questions[$qIndex]['options'][$choice]['score'] ?? 0;
+			$answersWithScore[$qIndex] = [
+				'choice' => $choice,
+				'text'   => $questions[$qIndex]['options'][$choice]['text'],
+				'score'  => $score,
+			];
+			$totalScore += $score;
+		}
 
-        // Simpan ke database
-        Question::create([
-            'name' => $request->name,
-            'nik' => $request->nik,
-            'jabatan' => $request->jabatan,
-            'divisi' => $request->divisi,
-            'answers' => $answersWithScore,
-            'total_score' => $totalScore,
-        ]);
+		$spLevel = $request->input('sp_level', 0);
+		$pengurangan = match ($spLevel) {
+			1 => 10,   // SP1
+			2 => 20,   // SP2
+			3 => 30,   // SP3
+			default => 0,
+		};
 
-        return redirect()->route('questions.result')->with('success', 'Jawaban berhasil disimpan. Total Nilai: ' . $totalScore);
-    }
+		$totalScore = max(0, $totalScore - $pengurangan);
+		$payloads = [
+			'name'        => $request->name,
+			'nik'         => $request->nik,
+			'jabatan'     => $request->jabatan,
+			'divisi'      => $request->divisi,
+			'answers'     => $answersWithScore,
+			'total_score' => $totalScore,
+			'bulan' 	  => $request->bulan,
+			'tahun' 	  => Carbon::now()->year,
+		];
+		// 🔹 Simpan ke database
+		Question::create($payloads);
 
-    // Helper untuk pertanyaan (biar tidak duplikat)
-    private function getQuestions()
+		return redirect()
+			->route('questions.result')
+			->with('success', "Jawaban berhasil disimpan. Total Nilai (setelah SP): {$totalScore}");
+	}
+
+
+	// Helper untuk pertanyaan (biar tidak duplikat)
+	private function getQuestions()
     {
         return [
             [
@@ -276,6 +292,7 @@ class QuestionController extends Controller
     public function result(Request $request)
     {
         $divisi = $request->get('divisi');
+		$bulan = strtolower($request->get('bulan'));
         $tahunMulai = $request->get('tahun_mulai');
         $tahunAkhir = $request->get('tahun_akhir');
 
@@ -284,17 +301,23 @@ class QuestionController extends Controller
                 'nik',
                 'jabatan',
                 'divisi',
+			'bulan',
                 DB::raw('AVG(total_score) as avg_score')
             )
-            ->groupBy('name', 'nik', 'jabatan', 'divisi');
+			->groupBy('name', 'nik', 'jabatan', 'divisi', 'bulan');
 
         // filter divisi
         if ($divisi) {
             $query->where('divisi', $divisi);
         }
 
-        // ambil driver db (mysql / pgsql)
-        $driver = DB::getDriverName();
+		// filter bulan
+		if ($bulan) {
+			$query->where('bulan', $bulan);
+		}
+
+		// ambil driver db (mysql / pgsql)
+		$driver = DB::getDriverName();
 
         // filter tahun
         if ($tahunMulai && $tahunAkhir) {
@@ -314,56 +337,77 @@ class QuestionController extends Controller
         $results = $query->get();
 
         $divisions = Question::select('divisi')->distinct()->pluck('divisi');
+		$bulans = Question::select('bulan')->distinct()->pluck('bulan');
+		// dd($bulan, Question::select('bulan')->distinct()->pluck('bulan'));
 
-        return view('questions.result', compact('results', 'divisions'));
+
+		return view('questions.result', compact('results', 'divisions', 'bulans'));
     }
 
-    public function downloadPdf(Request $request)
-    {
-        $divisi = $request->get('divisi');
-        $tahunMulai = $request->get('tahun_mulai');
-        $tahunAkhir = $request->get('tahun_akhir');
+	public function downloadPdf(Request $request)
+	{
+		$divisi     = $request->get('divisi');
+		$tahunMulai = $request->get('tahun_mulai');
+		$tahunAkhir = $request->get('tahun_akhir');
 
-        // kalau tabelnya memang score_kpi → pakai DB::table
-        $query = DB::table('score_kpi')
-            ->select(
-                'name',
-                'nik',
-                'jabatan',
-                'divisi',
-                DB::raw('AVG(total_score) as avg_score')
-            )
-            ->groupBy('name', 'nik', 'jabatan', 'divisi');
+		$query = DB::table('score_kpi')
+			->select(
+				'name',
+				'nik',
+				'jabatan',
+				'divisi',
+				DB::raw('AVG(total_score) as avg_score')
+			)
+			->groupBy('name', 'nik', 'jabatan', 'divisi');
 
-        if ($divisi) {
-            $query->where('divisi', $divisi);
-        }
+		// filter divisi
+		if (!empty($divisi)) {
+			$query->where('divisi', $divisi);
+		}
 
-        $driver = DB::getDriverName();
+		$driver = DB::getDriverName();
 
-        if ($tahunMulai && $tahunAkhir) {
-            if ($driver === 'mysql') {
-                $query->whereBetween(DB::raw('YEAR(created_at)'), [$tahunMulai, $tahunAkhir]);
-            } else {
-                $query->whereBetween(DB::raw("EXTRACT(YEAR FROM created_at)"), [$tahunMulai, $tahunAkhir]);
-            }
-        } elseif ($tahunMulai) {
-            if ($driver === 'mysql') {
-                $query->whereYear('created_at', $tahunMulai);
-            } else {
-                $query->whereRaw("EXTRACT(YEAR FROM created_at) = ?", [$tahunMulai]);
-            }
-        }
+		// filter tahun
+		if ($tahunMulai && $tahunAkhir) {
+			if ($driver === 'mysql') {
+				$query->whereBetween(DB::raw('YEAR(created_at)'), [$tahunMulai, $tahunAkhir]);
+			} else {
+				$query->whereBetween(DB::raw("EXTRACT(YEAR FROM created_at)"), [$tahunMulai, $tahunAkhir]);
+			}
+		} elseif ($tahunMulai) {
+			if ($driver === 'mysql') {
+				$query->whereYear('created_at', $tahunMulai);
+			} else {
+				$query->whereRaw("EXTRACT(YEAR FROM created_at) = ?", [$tahunMulai]);
+			}
+		}
 
-        $results = $query->orderBy('divisi')->get();
+		$results = $query->orderBy('divisi')->get();
 
-        // $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('questions.result-pdf', compact('results', 'divisi', 'tahunMulai', 'tahunAkhir'));
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('questions.result-pdf', [
-            'results'    => $results,
-            'divisi'     => $divisi,
-            'tahunMulai' => $tahunMulai,
-            'tahunAkhir' => $tahunAkhir
-        ]);
-        return $pdf->download('hasil_penilaian_rata2.pdf');
-    }
+		// tambahkan kategori langsung di sini
+		foreach ($results as $item) {
+			$score = $item->avg_score;
+			if ($score >= 90) {
+				$item->kategori = 'A';
+			} elseif ($score >= 80) {
+				$item->kategori = 'B';
+			} elseif ($score >= 70) {
+				$item->kategori = 'C';
+			} elseif ($score >= 60) {
+				$item->kategori = 'D';
+			} else {
+				$item->kategori = 'E';
+			}
+		}
+
+		// kirim ke PDF
+		$pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('questions.result-pdf', [
+			'results'    => $results,
+			'divisi'     => $divisi,
+			'tahunMulai' => $tahunMulai,
+			'tahunAkhir' => $tahunAkhir
+		]);
+
+		return $pdf->download('hasil_penilaian_rata2.pdf');
+	}
 }

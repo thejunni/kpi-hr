@@ -18,6 +18,8 @@ class Question extends Model
         'divisi',
         'answers',
         'total_score',
+		'bulan',
+		'tahun'
     ];
 
     protected $casts = [
