@@ -408,6 +408,9 @@ class QuestionController extends Controller
 			'tahunAkhir' => $tahunAkhir
 		]);
 
-		return $pdf->download('hasil_penilaian_rata2.pdf');
+		$now = Carbon::now()->format('Y-m-d');
+		$fileName = "Laporan Pencapaian Point KPI Rata- rata Tahunan Karyawan-{$divisi}-{$tahunMulai}-{$tahunAkhir}-{$now}.pdf";
+
+		return $pdf->download($fileName);
 	}
 }
