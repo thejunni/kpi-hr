@@ -134,8 +134,7 @@
 			</tr>
 			<tr>
 				<td>E</td>
-				<td>
-					< 59</td>
+				<td>&lt; 59</td>
 			</tr>
 		</tbody>
 	</table>

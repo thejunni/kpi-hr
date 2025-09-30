@@ -3,13 +3,19 @@
 @section('content')
 <div class="container">
 	{{-- 🔹 Header --}}
-	<div class="d-flex justify-content-between align-items-center mb-4">
-		<h2 class="mb-0">Form Penilaian Kinerja</h2>
-		<a href="{{ route('dashboard') }}" class="btn btn-dark fw-bold">
-			← Kembali ke Dashboard
-		</a>
+	<div class="card shadow-sm border-0 mb-4"
+		style="background: linear-gradient(135deg, #000000, #C9A227); color: white;">
+		<div class="card-body d-flex justify-content-between align-items-center">
+			<h4 class="mb-0 fw-bold">Form Penilaian Kinerja</h4>
+			<div>
+				<a href="{{ route('dashboard') }}" class="btn btn-dark fw-bold">
+					<i class="fa fa-arrow-left"></i> Kembali ke Dashboard
+				</a>
+			</div>
+		</div>
 	</div>
 
+	{{-- 🔹 Floating Header --}}
 	<div id="floating-header" class="floating-header shadow-sm mb-3 pt-2">
 		<div class="d-flex justify-content-between align-items-center px-3 py-2 text-white"
 			style="background: linear-gradient(90deg, #000000, #FFD700); border-radius: 10px;">
@@ -33,38 +39,32 @@
 
 		{{-- 🔹 Data Diri --}}
 		<div class="card shadow-sm mb-4">
-			<div class="card-header bg-info text-white" style="background: linear-gradient(90deg, #000000, #FFD700);">
+			<div class="card-header text-white" style="background: linear-gradient(90deg, #000000, #FFD700);">
 				<i class="fa-solid fa-user fa-lg me-2"></i>
 				<strong>Data Karyawan</strong>
 			</div>
 			<div class="card-body">
 				<div class="mb-3">
-					<label for="name" class="form-label">Nama</label>
-					<input type="text" class="form-control" id="name" name="name" required>
-				</div>
-
-				<div class="mb-3">
-					<label for="nik" class="form-label">NIK</label>
-					<input type="text" class="form-control" id="nik" name="nik" required>
-				</div>
-
-				<div class="mb-3">
-					<label for="jabatan" class="form-label">Jabatan</label>
-					<input type="text" class="form-control" id="jabatan" name="jabatan" required>
-				</div>
-
-				<div class="mb-3">
-					<label for="divisi" class="form-label">Divisi</label>
-					<select class="form-select" id="divisi" name="divisi" required>
-						<option value="" disabled selected>--Pilih Divisi--</option>
-						<option value="HRD">HRD</option>
-						<option value="Finance">Finance</option>
-						<option value="Marketing">Marketing</option>
-						<option value="IT">IT</option>
-						<option value="Operasional">Operasional</option>
+					<label for="employee_id" class="form-label">Nama</label>
+					<select class="form-select" id="employee_id" name="employee_id" required>
+						<option value="" disabled selected>--Pilih Karyawan--</option>
+						@foreach($employees as $emp)
+						<option value="{{ $emp->id }}">{{ $emp->name }}</option>
+						@endforeach
 					</select>
 				</div>
-
+				<div class="mb-3">
+					<label for="nik" class="form-label">NIK</label>
+					<input type="text" class="form-control" id="nik" name="nik" readonly disabled>
+				</div>
+				<div class="mb-3">
+					<label for="jabatan" class="form-label">Jabatan</label>
+					<input type="text" class="form-control" id="jabatan" name="jabatan" readonly disabled>
+				</div>
+				<div class="mb-3">
+					<label for="divisi" class="form-label">Divisi</label>
+					<input type="text" class="form-control" id="divisi" name="divisi" readonly disabled>
+				</div>
 				<div class="mb-3">
 					<label for="bulan" class="form-label">Bulan</label>
 					<select class="form-select" id="bulan" name="bulan" required>
@@ -96,29 +96,18 @@
 					<div><strong>Sub Aspek:</strong> {{ $question['sub_aspek'] }}</div>
 				</div>
 			</div>
-
 			<div class="card-body">
 				<h5 class="mb-3">{{ ($qIndex + 1) . '. ' . $question['pertanyaan'] }}</h5>
-
-				{{-- 🔹 Grid 5 kolom --}}
 				<div class="row row-cols-1 row-cols-md-5 g-3">
 					@foreach($question['options'] as $key => $option)
 					<div class="col">
-						<input
-							type="radio"
-							class="btn-check"
-							name="answers[{{ $qIndex }}]"
-							id="q{{ $qIndex }}option{{ $key }}"
-							value="{{ $key }}"
-							autocomplete="off">
-						<label class="card h-100 p-3 btn w-100 text-start d-flex flex-column justify-content-between" for="q{{ $qIndex }}option{{ $key }}">
-							<div style="font-size: 0.9rem;">
-								{{ $option['text'] }}
-							</div>
+						<input type="radio" class="btn-check" name="answers[{{ $qIndex }}]"
+							id="q{{ $qIndex }}option{{ $key }}" value="{{ $key }}" autocomplete="off">
+						<label class="card h-100 p-3 btn w-100 text-start d-flex flex-column justify-content-between"
+							for="q{{ $qIndex }}option{{ $key }}">
+							<div style="font-size: 0.9rem;">{{ $option['text'] }}</div>
 							<div class="mb-2">
-								<span class="score-badge h-100 w-100 d-flex flex-colum justify-content-center">
-									{{ $key }} = {{ $option['score'] }}
-								</span>
+								<span class="score-badge">{{ $key }} = {{ $option['score'] }}</span>
 							</div>
 						</label>
 					</div>
@@ -149,14 +138,12 @@
 
 		{{-- 🔹 Submit --}}
 		<div class="text-end">
-			<button type="submit" class="btn btn-success px-4">
-				Kirim Jawaban
-			</button>
+			<button type="submit" class="btn btn-success px-4">Kirim Jawaban</button>
 		</div>
 	</form>
 </div>
 
-{{-- CSS custom biar mirip contoh --}}
+{{-- CSS Custom --}}
 <style>
 	.card.btn {
 		border: 1px solid #ddd;
@@ -178,7 +165,6 @@
 		font-weight: bold;
 	}
 
-	/* Saat terpilih → hanya badge yang berubah */
 	.btn-check:checked+label .score-badge {
 		background: #FFD700;
 		color: #000;
@@ -188,10 +174,8 @@
 		border: 2px solid #FFD700;
 	}
 
-	/* Floating Header */
 	.floating-header {
 		position: sticky;
-		/* position: sticky; */
 		top: 0;
 		z-index: 1050;
 		transition: opacity 0.5s ease, transform 0.5s ease;
@@ -200,30 +184,6 @@
 		transform: translateY(-100px);
 	}
 
-	/* #floating-header {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		z-index: 1030;
-		opacity: 0;
-		transform: translateY(-20px);
-		transition: opacity 0.5s ease, transform 0.5s ease;
-		pointer-events: none;
-	} */
-
-	/* #floating-header {
-		position: fixed;
-		top: 10px;
-		left: 20%;
-		transform: translateX(-50%);
-		width: auto;
-		max-width: 1050px;
-		opacity: 0;
-		transition: opacity 0.5s ease, transform 0.5s ease;
-		z-index: 1050;
-	} */
-
 	#floating-header.show {
 		opacity: 1;
 		transform: translateY(0);
@@ -231,33 +191,63 @@
 	}
 </style>
 
-{{-- Script update floating header --}}
-<script>
-	document.addEventListener("DOMContentLoaded", function() {
-		const nameInput = document.getElementById("name");
-		const bulanSelect = document.getElementById("bulan");
-		const previewNama = document.getElementById("preview-nama");
-		const previewBulan = document.getElementById("preview-bulan");
-
-		nameInput.addEventListener("input", function() {
-			previewNama.textContent = nameInput.value || "Nama Karyawan";
-			previewNama.style.fontWeight = "bold"; // 🔹 bikin bold
-		});
-
-		bulanSelect.addEventListener("change", function() {
-			previewBulan.textContent = bulanSelect.options[bulanSelect.selectedIndex].text || "Pilih Bulan";
-			previewBulan.style.fontWeight = "bold"; // 🔹 bikin bold
-		});
-	});
-</script>
+{{-- Script Floating Header --}}
 <script>
 	document.addEventListener("scroll", function() {
 		const header = document.getElementById("floating-header");
-		if (window.scrollY > 100) { // ganti angka 100 sesuai kebutuhan
+		if (window.scrollY > 100) {
 			header.classList.add("show");
 		} else {
 			header.classList.remove("show");
 		}
+	});
+</script>
+
+{{-- Script Update Data Karyawan + Bulan --}}
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		const employeeSelect = document.getElementById("employee_id");
+		const nikInput = document.getElementById("nik");
+		const jabatanInput = document.getElementById("jabatan");
+		const divisiInput = document.getElementById("divisi");
+		const previewNama = document.getElementById("preview-nama");
+		const bulanSelect = document.getElementById("bulan");
+		const previewBulan = document.getElementById("preview-bulan");
+
+		// update field otomatis ketika pilih karyawan
+		employeeSelect.addEventListener("change", function() {
+			const employeeId = this.value;
+			if (employeeId) {
+				fetch(`/employees/${employeeId}`)
+					.then(response => response.json())
+					.then(data => {
+						nikInput.value = data.nik || "";
+						jabatanInput.value = data.jabatan || "";
+						divisiInput.value = data.divisi || "";
+						previewNama.textContent = data.name || "Nama Karyawan";
+						previewNama.style.fontWeight = "bold";
+					})
+					.catch(error => console.error("Error:", error));
+			}
+		});
+
+		// update bulan ketika pilih bulan
+		bulanSelect.addEventListener("change", function() {
+			previewBulan.textContent = bulanSelect.options[bulanSelect.selectedIndex].text || "Pilih Bulan";
+			previewBulan.style.fontWeight = "bold";
+		});
+	});
+</script>
+
+{{-- Script Select2 --}}
+<script>
+	$(document).ready(function() {
+		$('#employee_id').select2({
+			placeholder: "--Pilih Karyawan--",
+			allowClear: true,
+			width: '100%',
+			minimumResultsForSearch: 0
+		});
 	});
 </script>
 @endsection

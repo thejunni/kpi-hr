@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Question;
 use Carbon\Carbon;
@@ -111,21 +112,23 @@ class QuestionController extends Controller
                 ]
         ];
 
-        return view('questions.index', compact('questions'));
-    }
+		$employees = Employee::all();
+		return view('questions.index', compact('questions', 'employees'));
+	}
 
     // Proses submit form
     public function answer(Request $request)
 	{
 		$request->validate([
-			'name' => 'required|string|max:255',
-			'nik' => 'required|string|max:50',
-			'jabatan' => 'required|string|max:100',
-			'divisi' => 'required|string|max:100',
+			'employee_id' => 'required|exists:employees,id',
 			'answers' => 'required|array',
+			'bulan'   => 'required|string',
 		]);
 
-		// 🔹 Ambil pertanyaan (harus sama dengan showQuestion)
+		// 🔹 Ambil employee dari DB
+		$employee = Employee::findOrFail($request->employee_id);
+
+		// 🔹 Ambil pertanyaan
 		$questions = $this->getQuestions();
 
 		$totalScore = 0;
@@ -141,32 +144,36 @@ class QuestionController extends Controller
 			$totalScore += $score;
 		}
 
+		// 🔹 Hitung pengurangan jika ada SP
 		$spLevel = $request->input('sp_level', 0);
 		$pengurangan = match ($spLevel) {
-			1 => 10,   // SP1
-			2 => 20,   // SP2
-			3 => 30,   // SP3
+			1 => 10,
+			2 => 20,
+			3 => 30,
 			default => 0,
 		};
 
 		$totalScore = max(0, $totalScore - $pengurangan);
+
+		// 🔹 Payload sesuai struktur tabel score_kpi
 		$payloads = [
-			'name'        => $request->name,
-			'nik'         => $request->nik,
-			'jabatan'     => $request->jabatan,
-			'divisi'      => $request->divisi,
-			'answers'     => $answersWithScore,
+			'name'        => $employee->name,
+			'nik'         => $employee->nik,
+			'jabatan'     => $employee->jabatan,
+			'divisi'      => $employee->divisi,
+			'answers'     => json_encode($answersWithScore), // simpan dalam JSON
 			'total_score' => $totalScore,
-			'bulan' 	  => $request->bulan,
-			'tahun' 	  => Carbon::now()->year,
+			'bulan'       => $request->bulan,
+			'tahun'       => now()->year,
 		];
-		// 🔹 Simpan ke database
+
 		Question::create($payloads);
 
 		return redirect()
 			->route('questions.result')
 			->with('success', "Jawaban berhasil disimpan. Total Nilai (setelah SP): {$totalScore}");
 	}
+
 
 
 	// Helper untuk pertanyaan (biar tidak duplikat)
@@ -338,8 +345,6 @@ class QuestionController extends Controller
 
         $divisions = Question::select('divisi')->distinct()->pluck('divisi');
 		$bulans = Question::select('bulan')->distinct()->pluck('bulan');
-		// dd($bulan, Question::select('bulan')->distinct()->pluck('bulan'));
-
 
 		return view('questions.result', compact('results', 'divisions', 'bulans'));
     }
