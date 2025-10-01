@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -49,14 +50,60 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
     }
 
-    // 🔹 Detail user (by id)
-    public function show(Employee $user)
-    {
-        return view('users.show', compact('user'));
-    }
+	// 🔹 Detail user (by id)
+	public function show(Employee $user)
+	{
+		$nilaiBulanan = DB::table('score_kpi')
+			->select(
+				DB::raw("CONCAT(bulan, ' ', tahun) as periode"),
+				DB::raw("SUM(total_score) as total_score"),
+				DB::raw("json_agg(answers) as all_answers")
+			)
+			->where('nik', $user->nik)
+			->groupBy('tahun', 'bulan')
+			->orderBy('tahun', 'asc')
+			->orderByRaw("
+            CASE 
+                WHEN bulan = 'Januari' THEN 1
+                WHEN bulan = 'Februari' THEN 2
+                WHEN bulan = 'Maret' THEN 3
+                WHEN bulan = 'April' THEN 4
+                WHEN bulan = 'Mei' THEN 5
+                WHEN bulan = 'Juni' THEN 6
+                WHEN bulan = 'Juli' THEN 7
+                WHEN bulan = 'Agustus' THEN 8
+                WHEN bulan = 'September' THEN 9
+                WHEN bulan = 'Oktober' THEN 10
+                WHEN bulan = 'November' THEN 11
+                WHEN bulan = 'Desember' THEN 12
+            END
+        ")
+			->get()
+			->map(function ($row) {
+				// Karena hasil json_agg menghasilkan array of string JSON, gabungkan dulu
+				$merged = [];
 
-    // 🔹 Form edit user
-    public function edit(Employee $user)
+				foreach (json_decode($row->all_answers, true) ?? [] as $ans) {
+					$decoded = json_decode($ans, true);
+					if (is_array($decoded)) {
+						$merged = array_merge($merged, $decoded);
+					}
+				}
+
+				$row->decoded_answers = $merged;
+				return $row;
+			});
+
+		// 👉 siapkan data untuk chart
+		$labels = $nilaiBulanan->pluck('periode');
+		$scores = $nilaiBulanan->pluck('total_score');
+
+		return view('users.show', compact('user', 'nilaiBulanan', 'labels', 'scores'));
+	}
+
+
+	// 🔹 Form edit user
+	public function edit(Employee $user)
     {
         return view('users.edit', compact('user'));
     }

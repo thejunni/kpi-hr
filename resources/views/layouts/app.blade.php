@@ -31,6 +31,7 @@
 	<main class="py-4">
 		@yield('content')
 	</main>
+	@yield('scripts')
 
 	{{-- Tambahkan JS di bawah --}}
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
