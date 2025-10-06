@@ -29,6 +29,7 @@ Route::prefix('questions')->name('questions.')->group(function () {
 Route::resource('users', UserController::class);
 Route::post('/users/import', [UserController::class, 'import'])->name('users.import');
 Route::get('/employees/{id}', [UserController::class, 'getEmployeeById'])->name('employees.get');
+Route::get('/download/{id}', [UserController::class, 'downloadPDF'])->name('employees.download');
 // Auth (HRD only)
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');

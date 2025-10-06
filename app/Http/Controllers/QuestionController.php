@@ -165,8 +165,8 @@ class QuestionController extends Controller
 			'total_score' => $totalScore,
 			'bulan'       => $request->bulan,
 			'tahun'       => now()->year,
+			'sp' 		  => $spLevel
 		];
-
 		Question::create($payloads);
 
 		return redirect()

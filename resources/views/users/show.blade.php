@@ -51,6 +51,9 @@
 							<button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#detail-{{ $i }}">
 								<i class="fa-solid fa-eye"></i> Lihat
 							</button>
+							<a href="{{ route('employees.download', $nilai->id) }}" class="btn btn-danger btn-sm">
+                			    <i class="bi bi-file-earmark-pdf"></i> Download PDF
+                			</a>
 						</td>
 					</tr>
 					<tr class="collapse bg-light" id="detail-{{ $i }}">
@@ -74,6 +77,7 @@
 									@endforeach
 								</tbody>
 							</table>
+							Surat Peringatan : {{ $nilai->sp ? $nilai->sp : 0}}
 							@else
 							<p class="text-muted mb-0">Tidak ada detail jawaban.</p>
 							@endif

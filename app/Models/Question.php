@@ -19,7 +19,8 @@ class Question extends Model
         'answers',
         'total_score',
 		'bulan',
-		'tahun'
+		'tahun',
+		'sp'
     ];
 
     protected $casts = [

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Question;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -55,6 +57,8 @@ class UserController extends Controller
 	{
 		$nilaiBulanan = DB::table('score_kpi')
 			->select(
+				DB::raw("Min(id) as id"),
+				DB::raw("Min(sp) as sp"),
 				DB::raw("CONCAT(bulan, ' ', tahun) as periode"),
 				DB::raw("SUM(total_score) as total_score"),
 				DB::raw("json_agg(answers) as all_answers")
@@ -64,18 +68,18 @@ class UserController extends Controller
 			->orderBy('tahun', 'asc')
 			->orderByRaw("
             CASE 
-                WHEN bulan = 'Januari' THEN 1
-                WHEN bulan = 'Februari' THEN 2
-                WHEN bulan = 'Maret' THEN 3
-                WHEN bulan = 'April' THEN 4
-                WHEN bulan = 'Mei' THEN 5
-                WHEN bulan = 'Juni' THEN 6
-                WHEN bulan = 'Juli' THEN 7
-                WHEN bulan = 'Agustus' THEN 8
-                WHEN bulan = 'September' THEN 9
-                WHEN bulan = 'Oktober' THEN 10
-                WHEN bulan = 'November' THEN 11
-                WHEN bulan = 'Desember' THEN 12
+                WHEN bulan = 'januari' THEN 1
+                WHEN bulan = 'februari' THEN 2
+                WHEN bulan = 'maret' THEN 3
+                WHEN bulan = 'april' THEN 4
+                WHEN bulan = 'mei' THEN 5
+                WHEN bulan = 'juni' THEN 6
+                WHEN bulan = 'juli' THEN 7
+                WHEN bulan = 'agustus' THEN 8
+                WHEN bulan = 'september' THEN 9
+                WHEN bulan = 'oktober' THEN 10
+                WHEN bulan = 'november' THEN 11
+                WHEN bulan = 'desember' THEN 12
             END
         ")
 			->get()
@@ -97,7 +101,6 @@ class UserController extends Controller
 		// 👉 siapkan data untuk chart
 		$labels = $nilaiBulanan->pluck('periode');
 		$scores = $nilaiBulanan->pluck('total_score');
-
 		return view('users.show', compact('user', 'nilaiBulanan', 'labels', 'scores'));
 	}
 
@@ -178,4 +181,25 @@ class UserController extends Controller
 
 		return redirect()->back()->with('success', 'Data karyawan berhasil diimport!');
 	}
+	public function downloadPDF($id)
+	{
+	    $penilaian = Question::findOrFail($id);
+
+	    $answersRaw = $penilaian->answers;
+
+	    $decoded = json_decode($answersRaw, true);
+	    if (is_string($decoded)) {
+	        $decoded = json_decode($decoded, true);
+	    }
+
+	    $answers = $decoded ?? [];
+
+	    $pdf =Pdf::loadView('users.pdf', [
+	        'penilaian' => $penilaian,
+	        'answers' => $answers
+	    ])->setPaper('a4', 'portrait');
+
+	    return $pdf->download("Penilaian_{$penilaian->bulan}_{$penilaian->tahun}.pdf");
+	}
+
 }

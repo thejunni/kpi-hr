@@ -13,7 +13,7 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 		<div class="container">
-			<a class="navbar-brand" href="{{ route('dashboard') }}">Panel KPI BPR KAS</a>
+			<a class="navbar-brand" href="{{ route('dashboard') }}">Panel HRD BPR KAS</a>
 			<div class="d-flex">
 				@auth
 				<span class="navbar-text text-white me-3">
