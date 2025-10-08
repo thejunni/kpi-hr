@@ -351,71 +351,76 @@ class QuestionController extends Controller
 
 	public function downloadPdf(Request $request)
 	{
-		$divisi     = $request->get('divisi');
-		$tahunMulai = $request->get('tahun_mulai');
-		$tahunAkhir = $request->get('tahun_akhir');
+	    Carbon::setLocale('id');
 
-		$query = DB::table('score_kpi')
-			->select(
-				'name',
-				'nik',
-				'jabatan',
-				'divisi',
-				DB::raw('AVG(total_score) as avg_score')
-			)
-			->groupBy('name', 'nik', 'jabatan', 'divisi');
+	    $divisi     = $request->get('divisi');
+	    $tahunMulai = $request->get('tahun_mulai');
+	    $tahunAkhir = $request->get('tahun_akhir');
 
-		// filter divisi
-		if (!empty($divisi)) {
-			$query->where('divisi', $divisi);
-		}
+	    $query = DB::table('score_kpi')
+	        ->select(
+	            'name',
+	            'nik',
+	            'jabatan',
+	            'divisi',
+	            DB::raw('AVG(total_score) as avg_score')
+	        )
+	        ->groupBy('name', 'nik', 'jabatan', 'divisi');
 
-		$driver = DB::getDriverName();
+	    // filter divisi
+	    if (!empty($divisi)) {
+	        $query->where('divisi', $divisi);
+	    }
 
-		// filter tahun
-		if ($tahunMulai && $tahunAkhir) {
-			if ($driver === 'mysql') {
-				$query->whereBetween(DB::raw('YEAR(created_at)'), [$tahunMulai, $tahunAkhir]);
-			} else {
-				$query->whereBetween(DB::raw("EXTRACT(YEAR FROM created_at)"), [$tahunMulai, $tahunAkhir]);
-			}
-		} elseif ($tahunMulai) {
-			if ($driver === 'mysql') {
-				$query->whereYear('created_at', $tahunMulai);
-			} else {
-				$query->whereRaw("EXTRACT(YEAR FROM created_at) = ?", [$tahunMulai]);
-			}
-		}
+	    $driver = DB::getDriverName();
 
-		$results = $query->orderBy('divisi')->get();
+	    // filter tahun
+	    if ($tahunMulai && $tahunAkhir) {
+	        if ($driver === 'mysql') {
+	            $query->whereBetween(DB::raw('YEAR(created_at)'), [$tahunMulai, $tahunAkhir]);
+	        } else {
+	            $query->whereBetween(DB::raw("EXTRACT(YEAR FROM created_at)"), [$tahunMulai, $tahunAkhir]);
+	        }
+	    } elseif ($tahunMulai) {
+	        if ($driver === 'mysql') {
+	            $query->whereYear('created_at', $tahunMulai);
+	        } else {
+	            $query->whereRaw("EXTRACT(YEAR FROM created_at) = ?", [$tahunMulai]);
+	        }
+	    }
 
-		// tambahkan kategori langsung di sini
-		foreach ($results as $item) {
-			$score = $item->avg_score;
-			if ($score >= 90) {
-				$item->kategori = 'A';
-			} elseif ($score >= 80) {
-				$item->kategori = 'B';
-			} elseif ($score >= 70) {
-				$item->kategori = 'C';
-			} elseif ($score >= 60) {
-				$item->kategori = 'D';
-			} else {
-				$item->kategori = 'E';
-			}
-		}
+	    $results = $query->orderBy('divisi')->get();
 
-		// kirim ke PDF
-		$pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('questions.result-pdf', [
-			'results'    => $results,
-			'divisi'     => $divisi,
-			'tahunMulai' => $tahunMulai,
-			'tahunAkhir' => $tahunAkhir
-		]);
+	    // Tambahkan kategori berdasarkan skor
+	    foreach ($results as $item) {
+	        $score = $item->avg_score;
+	        if ($score >= 90) {
+	            $item->kategori = 'A';
+	        } elseif ($score >= 80) {
+	            $item->kategori = 'B';
+	        } elseif ($score >= 70) {
+	            $item->kategori = 'C';
+	        } elseif ($score >= 60) {
+	            $item->kategori = 'D';
+	        } else {
+	            $item->kategori = 'E';
+	        }
+	    }
 
-		$now = Carbon::now()->format('Y-m-d');
-		$fileName = "Laporan Pencapaian Point KPI Rata- rata Tahunan Karyawan-{$divisi}-{$tahunMulai}-{$tahunAkhir}-{$now}.pdf";
+	    // Kirim ke view PDF
+	    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('questions.result-pdf', [
+	        'results'    => $results,
+	        'divisi'     => $divisi,
+	        'tahunMulai' => $tahunMulai,
+	        'tahunAkhir' => $tahunAkhir,
+	        // kirim tanggal sekarang dengan format terjemahan
+	        'tanggalCetak' => Carbon::now()->translatedFormat('d F Y')
+	    ]);
 
-		return $pdf->download($fileName);
+	    // Gunakan nama file dengan tanggal berformat Indonesia
+	    $fileName = "Laporan Pencapaian KPI - {$divisi} - {$tahunMulai}-{$tahunAkhir} (" . Carbon::now()->translatedFormat('d F Y') . ").pdf";
+
+	    return $pdf->download($fileName);
 	}
+
 }

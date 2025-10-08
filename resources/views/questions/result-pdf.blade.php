@@ -108,6 +108,9 @@
 	</table>
 
 	{{-- Kategori Poin --}}
+	<div>
+		<p><strong>Kategori Point Range KPI :</strong></p>
+	</div>
 	<table class="kategori" border="1">
 		<thead>
 			<tr>
@@ -141,7 +144,7 @@
 
 	{{-- Tanda Tangan --}}
 	<div class="signature">
-		<p>Tanggal : {{ \Carbon\Carbon::now()->format('d F Y') }}</p>
+		<p>Tanggal : {{ $tanggalCetak }}</p>
 		<p>Dibuat Oleh,</p>
 		<br><br><br>
 		<p><u>HRM</u></p>

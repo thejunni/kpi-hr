@@ -104,6 +104,12 @@
 	</div>
 	@endif
 
+	{{-- 🔍 Search Bar --}}
+	<div class="input-group mb-3">
+		<span class="input-group-text bg-dark text-white"><i class="fa fa-search"></i></span>
+		<input type="text" id="tableSearch" class="form-control" placeholder="Cari nama, NIK, jabatan, divisi, bulan, atau skor...">
+	</div>
+
 	{{-- Tabel --}}
 	<div class="card shadow-sm border-0">
 		<div class="card-body">
@@ -136,7 +142,7 @@
 					</tr>
 					@empty
 					<tr>
-						<td colspan="6" class="text-center text-muted">
+						<td colspan="7" class="text-center text-muted">
 							Belum ada hasil penilaian.
 						</td>
 					</tr>
@@ -176,7 +182,9 @@
 		font-weight: 600;
 	}
 </style>
+
 <script>
+	// ✅ Inisialisasi Select2
 	$('.select2[name="divisi"]').select2({
 		placeholder: "-- Pilih Divisi --",
 		allowClear: true,
@@ -198,8 +206,9 @@
 		width: '100%'
 	});
 
+	// ✅ Pagination sederhana
 	$(document).ready(function() {
-		let rowsPerPage = 7; // jumlah data per halaman
+		let rowsPerPage = 7;
 		let rows = $('#resultTable tbody tr');
 		let rowsCount = rows.length;
 		let pageCount = Math.ceil(rowsCount / rowsPerPage);
@@ -208,7 +217,6 @@
 		function displayRows(page) {
 			let start = (page - 1) * rowsPerPage;
 			let end = start + rowsPerPage;
-
 			rows.hide();
 			rows.slice(start, end).show();
 		}
@@ -216,57 +224,37 @@
 		function createPagination(totalPages, currentPage) {
 			let paginationHTML = `<ul class="pagination">`;
 
-			// Previous
 			if (currentPage > 1) {
 				paginationHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${currentPage - 1}">&laquo;</a></li>`;
 			}
-
-			// First page
-			if (currentPage > 2) {
-				paginationHTML += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
-				if (currentPage > 3) {
-					paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-				}
+			for (let i = 1; i <= totalPages; i++) {
+				paginationHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+					<a class="page-link" href="#" data-page="${i}">${i}</a>
+				</li>`;
 			}
-
-			// Middle pages
-			for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-				if (i >= 1 && i <= totalPages) {
-					if (i === currentPage) {
-						paginationHTML += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
-					} else {
-						paginationHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-					}
-				}
-			}
-
-			// Last page
-			if (currentPage < totalPages - 1) {
-				if (currentPage < totalPages - 2) {
-					paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
-				}
-				paginationHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
-			}
-
-			// Next
 			if (currentPage < totalPages) {
 				paginationHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${currentPage + 1}">&raquo;</a></li>`;
 			}
-
 			paginationHTML += `</ul>`;
 			pagination.html(paginationHTML);
 		}
 
-		// Init
 		displayRows(1);
 		createPagination(pageCount, 1);
 
-		// Event click
 		$(document).on('click', '.pagination a', function(e) {
 			e.preventDefault();
 			let page = parseInt($(this).data('page'));
 			displayRows(page);
 			createPagination(pageCount, page);
+		});
+
+		// ✅ Search Bar fungsi
+		$('#tableSearch').on('keyup', function() {
+			let value = $(this).val().toLowerCase();
+			rows.filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+			});
 		});
 	});
 </script>

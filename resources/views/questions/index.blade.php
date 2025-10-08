@@ -34,7 +34,7 @@
 		</div>
 	</div>
 
-	<form method="POST" action="{{ route('questions.answer') }}">
+	<form id="formPenilaian" method="POST" action="{{ route('questions.answer') }}">
 		@csrf
 
 		{{-- 🔹 Data Diri --}}
@@ -214,7 +214,6 @@
 		const bulanSelect = document.getElementById("bulan");
 		const previewBulan = document.getElementById("preview-bulan");
 
-		// update field otomatis ketika pilih karyawan
 		employeeSelect.addEventListener("change", function() {
 			const employeeId = this.value;
 			if (employeeId) {
@@ -231,7 +230,6 @@
 			}
 		});
 
-		// update bulan ketika pilih bulan
 		bulanSelect.addEventListener("change", function() {
 			previewBulan.textContent = bulanSelect.options[bulanSelect.selectedIndex].text || "Pilih Bulan";
 			previewBulan.style.fontWeight = "bold";
@@ -247,6 +245,29 @@
 			allowClear: true,
 			width: '100%',
 			minimumResultsForSearch: 0
+		});
+	});
+</script>
+
+{{-- SweetAlert2 Konfirmasi Submit --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+	document.getElementById("formPenilaian").addEventListener("submit", function (e) {
+		e.preventDefault(); // Cegah submit langsung
+
+		Swal.fire({
+			title: "Apakah data yang dimasukkan sudah benar?",
+			text: "Periksa kembali sebelum mengirim penilaian. Pastikan Nama dan Bulan sudah benar",
+			icon: "question",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Ya, kirim!",
+			cancelButtonText: "Batal"
+		}).then((result) => {
+			if (result.isConfirmed) {
+				e.target.submit(); // Kirim form jika dikonfirmasi
+			}
 		});
 	});
 </script>

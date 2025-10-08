@@ -199,7 +199,7 @@ class UserController extends Controller
 	        'answers' => $answers
 	    ])->setPaper('a4', 'portrait');
 
-	    return $pdf->download("Penilaian_{$penilaian->bulan}_{$penilaian->tahun}.pdf");
+	    return $pdf->download("Penilaian {$penilaian->name} - {$penilaian->divisi} - {$penilaian->jabatan}_{$penilaian->bulan}_{$penilaian->tahun}.pdf");
 	}
 
 }
