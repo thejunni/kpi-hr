@@ -1,0 +1,62 @@
+version: "3.9"
+services:
+  # WEB APP
+  appbprkas:
+    image: app
+    container_name: appbprkashr
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.1.12}
+    volumes:
+      - ./:/var/www/app
+      - /var/www/app/vendor
+    extra_hosts:
+      - "internal.host:host-gateway"
+    ports:
+      - 9000
+    networks:
+      - nginxproxy-net
+  #DB Service
+  nginx:
+    image: nginx:latest
+    container_name: nginxbprkas
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:cached
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:cached
+      - ./:/var/www/app:cached
+      - ./docker/certbot/www:/var/www/certbot/:ro
+      - ./docker/certbot/conf/:/etc/nginx/ssl/:ro
+      - ./docker/certbot/letsencrypt:/etc/letsencrypt/:ro
+    restart: on-failure
+    depends_on:
+      - appbprkas
+    networks:
+      - nginxproxy-net
+  db:
+    image: postgres:latest
+    container_name: dbbprkashr
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: bprkas_hr
+      POSTGRES_USER: bprkas
+      POSTGRES_PASSWORD: bprkas131211
+    volumes:
+      - dbposgres:/var/lib/postgresql/data
+    networks:
+      - nginxproxy-net
+
+networks:
+  nginxproxy-net:
+    external: true
+#Volumes
+volumes:
+  dbposgres:
+    driver: local
