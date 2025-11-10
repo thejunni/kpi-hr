@@ -68,7 +68,7 @@
 					</tr>
 					@empty
 					<tr>
-     						<td colspan="7" class="text-center text-muted">Belum ada data karyawan.</td>
+						<td colspan="7" class="text-center text-muted">Belum ada data karyawan.</td>
 					</tr>
 					@endforelse
 				</tbody>
@@ -96,9 +96,9 @@
 				<div class="modal-body">
 					<p class="text-muted">Pastikan file CSV sesuai format berikut:</p>
 					<pre class="bg-light p-2 rounded small">
-name,nik,no_telephone,email,jabatan,role,divisi
-Budi,12345,08123456789,budi@example.com,Staff,User,Finance
-Siti,67890,08987654321,siti@example.com,Manager,Admin,HRD
+name,nik,no_telephone,jabatan,role,divisi
+Budi,12345,08123456789,Staff,User,Finance
+Siti,67890,08987654321,Manager,Admin,HRD
 					</pre>
 					<div class="mb-3">
 						<label for="file" class="form-label fw-bold">Pilih File CSV</label>
