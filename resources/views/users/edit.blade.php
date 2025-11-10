@@ -23,7 +23,7 @@
 						<input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
 					</div>
 					<div class="col">
-						<label class="form-label fw-bold">NIK</label>
+						<label class="form-label fw-bold">NIP</label>
 						<input type="text" name="nik" value="{{ $user->nik }}" class="form-control" required>
 					</div>
 				</div>

@@ -54,7 +54,7 @@
 					</select>
 				</div>
 				<div class="mb-3">
-					<label for="nik" class="form-label">NIK</label>
+					<label for="nik" class="form-label">NIP</label>
 					<input type="text" class="form-control" id="nik" name="nik" readonly disabled>
 				</div>
 				<div class="mb-3">
@@ -252,7 +252,7 @@
 {{-- SweetAlert2 Konfirmasi Submit --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-	document.getElementById("formPenilaian").addEventListener("submit", function (e) {
+	document.getElementById("formPenilaian").addEventListener("submit", function(e) {
 		e.preventDefault(); // Cegah submit langsung
 
 		Swal.fire({

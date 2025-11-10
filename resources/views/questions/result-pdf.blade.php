@@ -81,7 +81,7 @@
 			<tr>
 				<th>No</th>
 				<th>Nama</th>
-				<th>NIK</th>
+				<th>NIP</th>
 				<th>Jabatan</th>
 				<th>Rata-rata Poin KPI</th>
 				<th>Kategori</th>

@@ -19,11 +19,11 @@ class QuestionController extends Controller
                 'sub_aspek' => 'Kualitas Dan Kuantitas Hasil Kerja',
                 'pertanyaan' => 'Kualitas dan kuantitas hasil kerja sesuai standar?',
                 'options' => [
-                    'A' => ['text' => 'Kualitas/Kuantitas selalu diatas standar/target', 'score' => 60],
-                    'B' => ['text' => 'Kualitas/Kuantitas umumnya melebihi standar/target', 'score' => 48],
-                    'C' => ['text' => 'Kualitas/Kuantitas mencapai standar/target', 'score' => 36],
-                    'D' => ['text' => 'Kualitas/Kuantitas dibawah standar/target', 'score' => 24],
-                    'E' => ['text' => 'Kualitas/Kuantitas jauh dibawah standar/target', 'score' => 12],
+					'A' => ['text' => 'Kualitas/Kuantitas selalu diatas standard / target.', 'score' => 100],
+					'B' => ['text' => 'Kualitas/Kuantitas pada umumnya melebihi standar/target', 'score' => 90],
+					'C' => ['text' => 'Kualitas/Kuantitas mencapai standar/target', 'score' => 80],
+					'D' => ['text' => 'Kualitas/Kuantitas dibawah standar/target', 'score' => 70],
+					'E' => ['text' => 'Kualitas/Kuantitas jauh dibawah standar/target', 'score' => 60],
                 ]
             ],
             [
@@ -31,23 +31,23 @@ class QuestionController extends Controller
                 'sub_aspek' => 'Perilaku',
                 'pertanyaan' => 'Perilaku',
                 'options' => [
-                    'A' => ['text' => 'Selalu bersikap positif, cepat memahami & melaksanakan tugas dengan baik', 'score' => 4],
-                    'B' => ['text' => 'Tidak Menyatakan keberatan, serta memahami & melaksanakan tugas dengan sungguh-sungguh', 'score' => 3],
-                    'C' => ['text' => 'Sesekali melakukan penolakan, yang bersangkutan, memahami & menerima serta melaksanakan kebijakan', 'score' => 2],
-                    'D' => ['text' => 'Sering menolak, kurang memahami dan melaksanakan kebijakan hanya dengan setengah hati', 'score' => 1],
-                    'E' => ['text' => 'Hampir selalu menolak, tidak memahamai & melakasanakan kebijakan dengan semaunya', 'score' => 0],
-                ]
+					'A' => ['text' => 'Selalu bersikap positif, cepat memahami & melaksanakan tugas dengan baik', 'score' => 5],
+					'B' => ['text' => 'Tidak Menyatakan keberatan, serta memahami & melaksanakan tugas dengan sungguh-sungguh', 'score' => 4],
+					'C' => ['text' => 'Sesekali melakukan penolakan, yang bersangkutan, memahami & menerima serta melaksanakan kebijakan', 'score' => 3],
+					'D' => ['text' => 'Sering menolak, kurang memahami dan melaksanakan kebijakan hanya dengan setengah hati', 'score' => 2],
+					'E' => ['text' => 'Hampir selalu menolak, tidak memahamai & melakasanakan kebijakan dengan semaunya', 'score' => 1],
+				]
                 ],
                 [
                     'aspek' => 'Sikap Kerja',
                     'sub_aspek' => 'Inisiatif',
                     'pertanyaan' => 'Inisiatif',
                     'options' => [
-                        'A' => ['text' => 'Inisiatifnya sangat menonjol, mampu untuk melakukan perkerjaan atas prakasrsa sendiri', 'score' => 4],
-                        'B' => ['text' => 'Berusaha melaksanakan perkerjaan atas prakarsa sendiri, kadang dengan inisiatifnya perlu diarahkan', 'score' => 3],
-                        'C' => ['text' => 'Biasanya melakukan tugas ats petunjuk yang telah digariskan & mampu untuk menyelesaikan kasus-kasus tertentu', 'score' => 2],
-                        'D' => ['text' => 'Masih harus mendapatkan dorongan untuk mencapai hasil rata - rata seperti yang diharapkan', 'score' => 1],
-                        'E' => ['text' => 'Sikap kerjanya pasif & cepat jenuh dengan hasil kurang memuaskan, selalu harus didorong untuk menyelesaikan tugas', 'score' => 0],
+					'A' => ['text' => 'Inisiatifnya sangat menonjol, mampu untuk melakukan perkerjaan atas prakasrsa sendiri', 'score' => 5],
+					'B' => ['text' => 'Berusaha melaksanakan perkerjaan atas prakarsa sendiri, kadang dengan inisiatifnya perlu diarahkan', 'score' => 4],
+					'C' => ['text' => 'Biasanya melakukan tugas atas petunjuk yang telah digariskan & mampu untuk menyelesaikan kasus-kasus tertentu', 'score' => 3],
+					'D' => ['text' => 'Masih harus mendapatkan dorongan untuk mencapai hasil rata - rata seperti yang diharapkan', 'score' => 2],
+					'E' => ['text' => 'Sikap kerjanya pasif & cepat jenuh dengan hasil kurang memuaskan, selalu harus didorong untuk menyelesaikan tugas', 'score' => 1],
                     ]
                 ],
                 [
@@ -55,11 +55,11 @@ class QuestionController extends Controller
                     'sub_aspek' => 'Disiplin',
                     'pertanyaan' => 'Disiplin',
                     'options' => [
-                        'A' => ['text' => 'Selalu hadir sebelum waktu mulai kerja, keterlambatannya sangat beralasan & dapat dalam dipercaya penggunaan waktunya.', 'score' => 4],
-                        'B' => ['text' => 'Hampir tidak pernah terlambat dan mampu menggunakan waktu kerjanya dengan sangat bertanggung jawab.', 'score' => 3],
-                        'C' => ['text' => 'Cukup menghargai waktu kerja, kadang kadang terlambat dengan cukup beralasan', 'score' => 2],
-                        'D' => ['text' => 'Seringkali terlambat hadir dan kurnag menghargai waktu kerja, alasan keterlambatan sering kurang meyakinkan', 'score' => 1],
-                        'E' => ['text' => 'Hampir setiap kali terlambat masuk kerja & mangkir waktu kerja banyak terbuang untuk urusan luar perkerjaannya', 'score' => 0],
+					'A' => ['text' => 'Selalu hadir sebelum waktu mulai kerja, keterlambatannya sangat beralasan & dapat dalam dipercaya penggunaan waktunya.', 'score' => 10],
+					'B' => ['text' => 'Hampir tidak pernah terlambat dan mampu menggunakan waktu kerjanya dengan sangat bertanggung jawab.', 'score' => 8],
+					'C' => ['text' => 'Cukup menghargai waktu kerja, kadang kadang terlambat dengan cukup beralasan', 'score' => 6],
+					'D' => ['text' => 'Seringkali terlambat hadir dan kurnag menghargai waktu kerja, alasan keterlambatan sering kurang meyakinkan', 'score' => 4],
+					'E' => ['text' => 'Hampir setiap kali terlambat masuk kerja & mangkir waktu kerja banyak terbuang untuk urusan luar perkerjaannya', 'score' => 2],
                     ]
                 ],
                 [
@@ -67,11 +67,11 @@ class QuestionController extends Controller
                     'sub_aspek' => 'Kerjasama',
                     'pertanyaan' => 'Kerjasama',
                     'options' => [
-                        'A' => ['text' => 'Selalu terlibat dalam kerjasama & menjadi dinamisator kelompok kerjanya serta mengutamakan kepentingan kelompoknya.', 'score' => 4],
-                        'B' => ['text' => 'Hampir selalu menunjukan hubungan kerja yang menyenangkan & giat melibatkan diri demi tercapai tujuan kelompok.', 'score' => 3],
-                        'C' => ['text' => 'Pada umumnya hubungan dengan rekan sekerja/atasan baik, mau melibatkan diri demi tercapainya tujuan kelompok', 'score' => 2],
-                        'D' => ['text' => 'kurang melibatkan diri dalam kegiatan kelompok & kadnag kadang menempatkan kepentingan pribadi diatas kepentingan kelompok', 'score' => 1],
-                        'E' => ['text' => 'Sikapnya acuh tak acuh terhadap rekan sekerja & sulit diajak kerja sama serta tidak mau melibatkan diri dalam kegiatan berkelompok', 'score' => 0],
+					'A' => ['text' => 'Selalu terlibat dalam kerjasama & menjadi dinamisator kelompok kerjanya serta mengutamakan kepentingan kelompoknya.', 'score' => 5],
+					'B' => ['text' => 'Hampir selalu menunjukan hubungan kerja yang menyenangkan & giat melibatkan diri demi tercapai tujuan kelompok.', 'score' => 4],
+					'C' => ['text' => 'Pada umumnya hubungan dengan rekan sekerja/atasan baik, mau melibatkan diri demi tercapainya tujuan kelompok', 'score' => 3],
+					'D' => ['text' => 'kurang melibatkan diri dalam kegiatan kelompok & kadang kadang menempatkan kepentingan pribadi diatas kepentingan kelompok', 'score' => 2],
+					'E' => ['text' => 'Sikapnya acuh tak acuh terhadap rekan sekerja & sulit diajak kerja sama serta tidak mau melibatkan diri dalam kegiatan berkelompok', 'score' => 1],
                     ]
                 ],
                 [
@@ -79,15 +79,15 @@ class QuestionController extends Controller
                     'sub_aspek' => 'Tanggung Jawab',
                     'pertanyaan' => 'Tanggung Jawab',
                     'options' => [
-                        'A' => ['text' => 'Kemampuannya untuk menyelesaikan tugas berat telah teruji, gigih, dan positif dalam menghadapi tambahan beban kerja.', 'score' => 4],
-                        'B' => ['text' => 'Bertambahnya beban kerja dapat diterima dengan baik, cara kerjanya sangat efektif sehingga mudah menghadapi rintangan /tekanan.', 'score' => 3],
-                        'C' => ['text' => 'Masih dapat menyelesaikan tugasnya dengan baik meskipun rintangan atau bertambahnya beban kerja', 'score' => 2],
-                        'D' => ['text' => 'Biasanya beban kerjanya terganggu bila menghadapi rintangan / tekanan, bersikap negatif dalam menghadapi beban kerja yang berat', 'score' => 1],
-                        'E' => ['text' => 'Hampir selalu menyerah dan tidak mampu menyelesaikan perkerjaan bila menemu rintangan, bersikap negatif bila ada beban kerja berat.', 'score' => 0],
+					'A' => ['text' => 'Kemampuannya untuk menyelesaikan tugas berat telah teruji, gigih, dan positif dalam menghadapi tambahan beban kerja.', 'score' => 5],
+					'B' => ['text' => 'Bertambahnya beban kerja dapat diterima dengan baik, cara kerjanya sangat efektif sehingga mudah menghadapi rintangan /tekanan.', 'score' => 4],
+					'C' => ['text' => 'Masih dapat menyelesaikan tugasnya dengan baik meskipun rintangan atau bertambahnya beban kerja', 'score' => 3],
+					'D' => ['text' => 'Biasanya beban kerjanya terganggu bila menghadapi rintangan / tekanan, bersikap negatif dalam menghadapi beban kerja yang berat', 'score' => 2],
+					'E' => ['text' => 'Hampir selalu menyerah dan tidak mampu menyelesaikan perkerjaan bila menemu rintangan, bersikap negatif bila ada beban kerja berat.', 'score' => 1],
                     ]
                 ],
                 [
-                    'aspek' => 'Kemampuan Kerja',
+				'aspek' => 'Sikap Kerja',
                     'sub_aspek' => 'Penguasaan Perkerjaan',
                     'pertanyaan' => 'Penguasaan Perkerjaan',
                     'options' => [
@@ -97,19 +97,7 @@ class QuestionController extends Controller
                         'D' => ['text' => 'Kurang menguasai bidangnya dan membutuhkan petunjuk atasannya. Banyak rencana kerjanya yang tidak tepat', 'score' => 4],
                         'E' => ['text' => 'Kemampuannya jauh dibawah tuntutan pekerjaan. Selalu membuat kesalahan dan perencanaan kerjanya hampir tidak pernah tepat.', 'score' => 2],
                     ]
-                ],
-                [
-                    'aspek' => 'Kemampuan Kerja',
-                    'sub_aspek' => 'Proses PDCA',
-                    'pertanyaan' => 'Proses PDCA',
-                    'options' => [
-                        'A' => ['text' => 'Selalu memutar roda PDCA secara konsisten pada tiap permasalahan / perkerjaan yang dihadapi sehari - hari.', 'score' => 10],
-                        'B' => ['text' => 'Selalu berusaha melakukan pekerjaan dengan mengacu pada proses PDCA.', 'score' => 8],
-                        'C' => ['text' => 'Berpedoman pada PDCA tetapi tidak konsisten pada setiap perkerjaan sehari - hari.', 'score' => 6],
-                        'D' => ['text' => 'Cenderung tidak berpedoman pada proses PDCA dalam melaksanakan perkerjaannya sehari hari', 'score' => 4],
-                        'E' => ['text' => 'Tidak pernah berpedoman pada proses PDCA dalam melaksanakan perkerjaannya sehari - hari', 'score' => 2],
-                    ]
-                ]
+			],
         ];
 
 		$employees = Employee::all();
@@ -180,16 +168,16 @@ class QuestionController extends Controller
 	private function getQuestions()
     {
         return [
-            [
+			[
                 'aspek' => 'Hasil KERJA (KPI)',
                 'sub_aspek' => 'Kualitas Dan Kuantitas Hasil Kerja',
                 'pertanyaan' => 'Kualitas dan kuantitas hasil kerja sesuai standar?',
                 'options' => [
-                    'A' => ['text' => 'Kualitas/Kuantitas selalu diatas standar/target', 'score' => 60],
-                    'B' => ['text' => 'Kualitas/Kuantitas umumnya melebihi standar/target', 'score' => 48],
-                    'C' => ['text' => 'Kualitas/Kuantitas mencapai standar/target', 'score' => 36],
-                    'D' => ['text' => 'Kualitas/Kuantitas dibawah standar/target', 'score' => 24],
-                    'E' => ['text' => 'Kualitas/Kuantitas jauh dibawah standar/target', 'score' => 12],
+					'A' => ['text' => 'Kualitas/Kuantitas selalu diatas standard / target.', 'score' => 100],
+					'B' => ['text' => 'Kualitas/Kuantitas pada umumnya melebihi standar/target', 'score' => 90],
+					'C' => ['text' => 'Kualitas/Kuantitas mencapai standar/target', 'score' => 80],
+					'D' => ['text' => 'Kualitas/Kuantitas dibawah standar/target', 'score' => 70],
+					'E' => ['text' => 'Kualitas/Kuantitas jauh dibawah standar/target', 'score' => 60],
                 ]
             ],
             [
@@ -197,23 +185,23 @@ class QuestionController extends Controller
                 'sub_aspek' => 'Perilaku',
                 'pertanyaan' => 'Perilaku',
                 'options' => [
-                    'A' => ['text' => 'Selalu bersikap positif, cepat memahami & melaksanakan tugas dengan baik', 'score' => 4],
-                    'B' => ['text' => 'Tidak Menyatakan keberatan, serta memahami & melaksanakan tugas dengan sungguh-sungguh', 'score' => 3],
-                    'C' => ['text' => 'Sesekali melakukan penolakan, yang bersangkutan, memahami & menerima serta melaksanakan kebijakan', 'score' => 2],
-                    'D' => ['text' => 'Sering menolak, kurang memahami dan melaksanakan kebijakan hanya dengan setengah hati', 'score' => 1],
-                    'E' => ['text' => 'Hampir selalu menolak, tidak memahamai & melakasanakan kebijakan dengan semaunya', 'score' => 0],
-                ]
+					'A' => ['text' => 'Selalu bersikap positif, cepat memahami & melaksanakan tugas dengan baik', 'score' => 5],
+					'B' => ['text' => 'Tidak Menyatakan keberatan, serta memahami & melaksanakan tugas dengan sungguh-sungguh', 'score' => 4],
+					'C' => ['text' => 'Sesekali melakukan penolakan, yang bersangkutan, memahami & menerima serta melaksanakan kebijakan', 'score' => 3],
+					'D' => ['text' => 'Sering menolak, kurang memahami dan melaksanakan kebijakan hanya dengan setengah hati', 'score' => 2],
+					'E' => ['text' => 'Hampir selalu menolak, tidak memahamai & melakasanakan kebijakan dengan semaunya', 'score' => 1],
+				]
                 ],
                 [
                     'aspek' => 'Sikap Kerja',
                     'sub_aspek' => 'Inisiatif',
                     'pertanyaan' => 'Inisiatif',
                     'options' => [
-                        'A' => ['text' => 'Inisiatifnya sangat menonjol, mampu untuk melakukan perkerjaan atas prakasrsa sendiri', 'score' => 4],
-                        'B' => ['text' => 'Berusaha melaksanakan perkerjaan atas prakarsa sendiri, kadang dengan inisiatifnya perlu diarahkan', 'score' => 3],
-                        'C' => ['text' => 'Biasanya melakukan tugas ats petunjuk yang telah digariskan & mampu untuk menyelesaikan kasus-kasus tertentu', 'score' => 2],
-                        'D' => ['text' => 'Masih harus mendapatkan dorongan untuk mencapai hasil rata - rata seperti yang diharapkan', 'score' => 1],
-                        'E' => ['text' => 'Sikap kerjanya pasif & cepat jenuh dengan hasil kurang memuaskan, selalu harus didorong untuk menyelesaikan tugas', 'score' => 0],
+					'A' => ['text' => 'Inisiatifnya sangat menonjol, mampu untuk melakukan perkerjaan atas prakasrsa sendiri', 'score' => 5],
+					'B' => ['text' => 'Berusaha melaksanakan perkerjaan atas prakarsa sendiri, kadang dengan inisiatifnya perlu diarahkan', 'score' => 4],
+					'C' => ['text' => 'Biasanya melakukan tugas atas petunjuk yang telah digariskan & mampu untuk menyelesaikan kasus-kasus tertentu', 'score' => 3],
+					'D' => ['text' => 'Masih harus mendapatkan dorongan untuk mencapai hasil rata - rata seperti yang diharapkan', 'score' => 2],
+					'E' => ['text' => 'Sikap kerjanya pasif & cepat jenuh dengan hasil kurang memuaskan, selalu harus didorong untuk menyelesaikan tugas', 'score' => 1],
                     ]
                 ],
                 [
@@ -221,11 +209,11 @@ class QuestionController extends Controller
                     'sub_aspek' => 'Disiplin',
                     'pertanyaan' => 'Disiplin',
                     'options' => [
-                        'A' => ['text' => 'Selalu hadir sebelum waktu mulai kerja, keterlambatannya sangat beralasan & dapat dalam dipercaya penggunaan waktunya.', 'score' => 4],
-                        'B' => ['text' => 'Hampir tidak pernah terlambat dan mampu menggunakan waktu kerjanya dengan sangat bertanggung jawab.', 'score' => 3],
-                        'C' => ['text' => 'Cukup menghargai waktu kerja, kadang kadang terlambat dengan cukup beralasan', 'score' => 2],
-                        'D' => ['text' => 'Seringkali terlambat hadir dan kurnag menghargai waktu kerja, alasan keterlambatan sering kurang meyakinkan', 'score' => 1],
-                        'E' => ['text' => 'Hampir setiap kali terlambat masuk kerja & mangkir waktu kerja banyak terbuang untuk urusan luar perkerjaannya', 'score' => 0],
+					'A' => ['text' => 'Selalu hadir sebelum waktu mulai kerja, keterlambatannya sangat beralasan & dapat dalam dipercaya penggunaan waktunya.', 'score' => 10],
+					'B' => ['text' => 'Hampir tidak pernah terlambat dan mampu menggunakan waktu kerjanya dengan sangat bertanggung jawab.', 'score' => 8],
+					'C' => ['text' => 'Cukup menghargai waktu kerja, kadang kadang terlambat dengan cukup beralasan', 'score' => 6],
+					'D' => ['text' => 'Seringkali terlambat hadir dan kurnag menghargai waktu kerja, alasan keterlambatan sering kurang meyakinkan', 'score' => 4],
+					'E' => ['text' => 'Hampir setiap kali terlambat masuk kerja & mangkir waktu kerja banyak terbuang untuk urusan luar perkerjaannya', 'score' => 2],
                     ]
                 ],
                 [
@@ -233,11 +221,11 @@ class QuestionController extends Controller
                     'sub_aspek' => 'Kerjasama',
                     'pertanyaan' => 'Kerjasama',
                     'options' => [
-                        'A' => ['text' => 'Selalu terlibat dalam kerjasama & menjadi dinamisator kelompok kerjanya serta mengutamakan kepentingan kelompoknya.', 'score' => 4],
-                        'B' => ['text' => 'Hampir selalu menunjukan hubungan kerja yang menyenangkan & giat melibatkan diri demi tercapai tujuan kelompok.', 'score' => 3],
-                        'C' => ['text' => 'Pada umumnya hubungan dengan rekan sekerja/atasan baik, mau melibatkan diri demi tercapainya tujuan kelompok', 'score' => 2],
-                        'D' => ['text' => 'kurang melibatkan diri dalam kegiatan kelompok & kadnag kadang menempatkan kepentingan pribadi diatas kepentingan kelompok', 'score' => 1],
-                        'E' => ['text' => 'Sikapnya acuh tak acuh terhadap rekan sekerja & sulit diajak kerja sama serta tidak mau melibatkan diri dalam kegiatan berkelompok', 'score' => 0],
+					'A' => ['text' => 'Selalu terlibat dalam kerjasama & menjadi dinamisator kelompok kerjanya serta mengutamakan kepentingan kelompoknya.', 'score' => 5],
+					'B' => ['text' => 'Hampir selalu menunjukan hubungan kerja yang menyenangkan & giat melibatkan diri demi tercapai tujuan kelompok.', 'score' => 4],
+					'C' => ['text' => 'Pada umumnya hubungan dengan rekan sekerja/atasan baik, mau melibatkan diri demi tercapainya tujuan kelompok', 'score' => 3],
+					'D' => ['text' => 'kurang melibatkan diri dalam kegiatan kelompok & kadang kadang menempatkan kepentingan pribadi diatas kepentingan kelompok', 'score' => 2],
+					'E' => ['text' => 'Sikapnya acuh tak acuh terhadap rekan sekerja & sulit diajak kerja sama serta tidak mau melibatkan diri dalam kegiatan berkelompok', 'score' => 1],
                     ]
                 ],
                 [
@@ -245,15 +233,15 @@ class QuestionController extends Controller
                     'sub_aspek' => 'Tanggung Jawab',
                     'pertanyaan' => 'Tanggung Jawab',
                     'options' => [
-                        'A' => ['text' => 'Kemampuannya untuk menyelesaikan tugas berat telah teruji, gigih, dan positif dalam menghadapi tambahan beban kerja.', 'score' => 4],
-                        'B' => ['text' => 'Bertambahnya beban kerja dapat diterima dengan baik, cara kerjanya sangat efektif sehingga mudah menghadapi rintangan /tekanan.', 'score' => 3],
-                        'C' => ['text' => 'Masih dapat menyelesaikan tugasnya dengan baik meskipun rintangan atau bertambahnya beban kerja', 'score' => 2],
-                        'D' => ['text' => 'Biasanya beban kerjanya terganggu bila menghadapi rintangan / tekanan, bersikap negatif dalam menghadapi beban kerja yang berat', 'score' => 1],
-                        'E' => ['text' => 'Hampir selalu menyerah dan tidak mampu menyelesaikan perkerjaan bila menemu rintangan, bersikap negatif bila ada beban kerja berat.', 'score' => 0],
+					'A' => ['text' => 'Kemampuannya untuk menyelesaikan tugas berat telah teruji, gigih, dan positif dalam menghadapi tambahan beban kerja.', 'score' => 5],
+					'B' => ['text' => 'Bertambahnya beban kerja dapat diterima dengan baik, cara kerjanya sangat efektif sehingga mudah menghadapi rintangan /tekanan.', 'score' => 4],
+					'C' => ['text' => 'Masih dapat menyelesaikan tugasnya dengan baik meskipun rintangan atau bertambahnya beban kerja', 'score' => 3],
+					'D' => ['text' => 'Biasanya beban kerjanya terganggu bila menghadapi rintangan / tekanan, bersikap negatif dalam menghadapi beban kerja yang berat', 'score' => 2],
+					'E' => ['text' => 'Hampir selalu menyerah dan tidak mampu menyelesaikan perkerjaan bila menemu rintangan, bersikap negatif bila ada beban kerja berat.', 'score' => 1],
                     ]
                 ],
                 [
-                    'aspek' => 'Kemampuan Kerja',
+				'aspek' => 'Sikap Kerja',
                     'sub_aspek' => 'Penguasaan Perkerjaan',
                     'pertanyaan' => 'Penguasaan Perkerjaan',
                     'options' => [
@@ -263,19 +251,7 @@ class QuestionController extends Controller
                         'D' => ['text' => 'Kurang menguasai bidangnya dan membutuhkan petunjuk atasannya. Banyak rencana kerjanya yang tidak tepat', 'score' => 4],
                         'E' => ['text' => 'Kemampuannya jauh dibawah tuntutan pekerjaan. Selalu membuat kesalahan dan perencanaan kerjanya hampir tidak pernah tepat.', 'score' => 2],
                     ]
-                ],
-                [
-                    'aspek' => 'Kemampuan Kerja',
-                    'sub_aspek' => 'Proses PDCA',
-                    'pertanyaan' => 'Proses PDCA',
-                    'options' => [
-                        'A' => ['text' => 'Selalu memutar roda PDCA secara konsisten pada tiap permasalahan / perkerjaan yang dihadapi sehari - hari.', 'score' => 10],
-                        'B' => ['text' => 'Selalu berusaha melakukan pekerjaan dengan mengacu pada proses PDCA.', 'score' => 8],
-                        'C' => ['text' => 'Berpedoman pada PDCA tetapi tidak konsisten pada setiap perkerjaan sehari - hari.', 'score' => 6],
-                        'D' => ['text' => 'Cenderung tidak berpedoman pada proses PDCA dalam melaksanakan perkerjaannya sehari hari', 'score' => 4],
-                        'E' => ['text' => 'Tidak pernah berpedoman pada proses PDCA dalam melaksanakan perkerjaannya sehari - hari', 'score' => 2],
-                    ]
-                ]
+			],
         ];
     }
 

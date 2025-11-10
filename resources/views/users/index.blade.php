@@ -40,7 +40,7 @@
 						<tr>
 							<th style="width: 5%;">No</th>
 							<th style="width: 18%;">Nama</th>
-							<th style="width: 10%;">NIK</th>
+							<th style="width: 10%;">NIP</th>
 							<th style="width: 20%;">Jabatan</th>
 							<th style="width: 10%;">Role</th>
 							<th style="width: 20%;">Divisi</th>
@@ -99,7 +99,7 @@
 				<div class="modal-body">
 					<p class="text-muted">Pastikan file CSV sesuai format berikut:</p>
 					<pre class="bg-light p-2 rounded small">
-name,nik,no_telephone,email,jabatan,role,divisi
+name,nip,no_telephone,email,jabatan,role,divisi
 Budi,12345,08123456789,budi@example.com,Staff,User,Finance
 Siti,67890,08987654321,siti@example.com,Manager,Admin,HRD
 					</pre>

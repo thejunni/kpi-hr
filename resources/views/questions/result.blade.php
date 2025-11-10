@@ -118,7 +118,7 @@
 					<tr>
 						<th>No</th>
 						<th>Nama</th>
-						<th>NIK</th>
+						<th>NIP</th>
 						<th>Jabatan</th>
 						<th>Divisi</th>
 						<th>Bulan</th>

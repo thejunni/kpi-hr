@@ -17,7 +17,7 @@
 		</div>
 		<div class="card-body">
 			<p><strong>Nama:</strong> {{ $user->name }}</p>
-			<p><strong>NIK:</strong> {{ $user->nik }}</p>
+			<p><strong>NIP:</strong> {{ $user->nik }}</p>
 			<p><strong>Email:</strong> {{ $user->email }}</p>
 			<p><strong>Jabatan:</strong> {{ $user->jabatan ?? '-' }}</p>
 			<p><strong>Divisi:</strong> {{ $user->divisi ?? '-' }}</p>
@@ -52,8 +52,8 @@
 								<i class="fa-solid fa-eye"></i> Lihat
 							</button>
 							<a href="{{ route('employees.download', $nilai->id) }}" class="btn btn-danger btn-sm">
-                			    <i class="bi bi-file-earmark-pdf"></i> Download PDF
-                			</a>
+								<i class="bi bi-file-earmark-pdf"></i> Download PDF
+							</a>
 						</td>
 					</tr>
 					<tr class="collapse bg-light" id="detail-{{ $i }}">

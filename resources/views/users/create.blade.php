@@ -22,7 +22,7 @@
 						<input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap" required>
 					</div>
 					<div class="col">
-						<label class="form-label fw-bold">NIK</label>
+						<label class="form-label fw-bold">NIP</label>
 						<input type="text" name="nik" class="form-control" placeholder="Masukkan NIK" required>
 					</div>
 				</div>

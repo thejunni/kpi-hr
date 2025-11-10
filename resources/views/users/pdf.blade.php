@@ -59,7 +59,7 @@
 
 	<div class="info">
 		<p><strong>Nama :</strong> {{ $penilaian->name ?? '-' }}</p>
-		<p><strong>NIK :</strong> {{ $penilaian->nik ?? '-' }}</p>
+		<p><strong>NIP :</strong> {{ $penilaian->nik ?? '-' }}</p>
 		<p><strong>Jabatan :</strong> {{ $penilaian->jabatan ?? '-' }}</p>
 		<p><strong>Divisi :</strong> {{ $penilaian->divisi ?? '-' }}</p>
 		<p><strong>Periode :</strong> {{ ucfirst($penilaian->bulan) }} {{ $penilaian->tahun }}</p>
@@ -100,4 +100,5 @@
 		<p><u>HRM</u></p>
 	</div>
 </body>
+
 </html>
