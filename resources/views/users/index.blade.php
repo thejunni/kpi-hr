@@ -33,46 +33,49 @@
 					<option value="25">25</option>
 				</select>
 			</div>
-			<table class="table table-striped table-hover align-middle" id="userTable">
-				<thead class="table-dark">
-					<tr>
-						<th>No</th>
-						<th>Nama</th>
-						<th>NIK</th>
-						<th>Jabatan</th>
-						<th>Role</th>
-						<th>Divisi</th>
-						<th class="text-center">Aksi</th>
-					</tr>
-				</thead>
-				<tbody>
-					@forelse($users as $user)
-					<tr>
-						<td>{{ $loop->iteration }}</td>
-						<td>{{ $user->name }}</td>
-						<td>{{ $user->nik }}</td>
-						<td>{{ $user->jabatan }}</td>
-						<td>{{ $user->role }}</td>
-						<td>{{ $user->divisi }}</td>
-						<td class="text-center">
-							<a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-info text-white">Lihat</a>
-							<a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
-							<form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline delete-form">
-								@csrf
-								@method('DELETE')
-								<button type="button" class="btn btn-sm btn-danger btn-delete">
-									Hapus
-								</button>
-							</form>
-						</td>
-					</tr>
-					@empty
-					<tr>
-						<td colspan="7" class="text-center text-muted">Belum ada data karyawan.</td>
-					</tr>
-					@endforelse
-				</tbody>
-			</table>
+
+			<div class="table-responsive">
+				<table class="table table-striped table-hover align-middle text-nowrap" id="userTable" style="table-layout: fixed; width: 100%;">
+					<thead class="table-dark">
+						<tr>
+							<th style="width: 5%;">No</th>
+							<th style="width: 18%;">Nama</th>
+							<th style="width: 10%;">NIK</th>
+							<th style="width: 20%;">Jabatan</th>
+							<th style="width: 10%;">Role</th>
+							<th style="width: 20%;">Divisi</th>
+							<th style="width: 17%;" class="text-center">Aksi</th>
+						</tr>
+					</thead>
+					<tbody>
+						@forelse($users as $user)
+						<tr>
+							<td>{{ $loop->iteration }}</td>
+							<td>{{ $user->name }}</td>
+							<td>{{ $user->nik }}</td>
+							<td>{{ $user->jabatan }}</td>
+							<td>{{ $user->role }}</td>
+							<td class="text-truncate" title="{{ $user->divisi }}">{{ $user->divisi }}</td>
+							<td class="text-center">
+								<a href="{{ route('users.show', $user->id) }}" class="btn btn-sm btn-info text-white">Lihat</a>
+								<a href="{{ route('users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
+								<form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline delete-form">
+									@csrf
+									@method('DELETE')
+									<button type="button" class="btn btn-sm btn-danger btn-delete">
+										Hapus
+									</button>
+								</form>
+							</td>
+						</tr>
+						@empty
+						<tr>
+							<td colspan="7" class="text-center text-muted">Belum ada data karyawan.</td>
+						</tr>
+						@endforelse
+					</tbody>
+				</table>
+			</div>
 
 			{{-- Pagination --}}
 			<nav>
@@ -144,6 +147,24 @@ Siti,67890,08987654321,siti@example.com,Manager,Admin,HRD
 
 	.pagination .page-link {
 		color: #000;
+	}
+
+	/* Pastikan kolom Divisi (dan lainnya) punya lebar tetap */
+	#userTable th,
+	#userTable td {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	/* Agar teks panjang tidak merusak layout */
+	.table-responsive {
+		overflow-x: auto;
+	}
+
+	/* Opsional: supaya kolom aksi tidak terlalu sempit */
+	#userTable td .btn {
+		margin: 1px;
 	}
 </style>
 
