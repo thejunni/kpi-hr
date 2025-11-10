@@ -170,6 +170,7 @@ class UserController extends Controller
 				'name'        => $row[0],
 				'nik'         => $row[1],
 				'no_telephone' => $row[2],
+				'email'       => $row[3],
 				'jabatan'     => $row[4],
 				'role'        => $row[5],
 				'divisi'      => $row[6],
