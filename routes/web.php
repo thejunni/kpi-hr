@@ -26,6 +26,7 @@ Route::prefix('questions')->name('questions.')->group(function () {
     Route::post('/answer', [QuestionController::class, 'answer'])->name('answer');
     Route::get('/result/download', [QuestionController::class, 'downloadPdf'])->name('downloadPdf');
 	Route::delete('/delete/{id}', [QuestionController::class, 'destroy'])->name('destroy');
+	Route::get('/questions/category/{slug}', [QuestionController::class, 'category'])->name('category');
 });
 Route::resource('users', UserController::class);
 Route::post('/users/import', [UserController::class, 'import'])->name('users.import');

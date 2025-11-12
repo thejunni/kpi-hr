@@ -25,11 +25,59 @@
 				<div class="col-md-3">
 					<select name="divisi" class="form-select select2">
 						<option value="">-- Semua Divisi --</option>
-						<option value="Division-IT" {{ request('divisi') == 'Division-IT' ? 'selected' : '' }}>IT</option>
-						<option value="HRD" {{ request('divisi') == 'HRD' ? 'selected' : '' }}>HRD</option>
-						<option value="Finance" {{ request('divisi') == 'Finance' ? 'selected' : '' }}>Finance</option>
-						<option value="Operasional" {{ request('divisi') == 'Operasional' ? 'selected' : '' }}>Operasional</option>
-						<option value="Marketing" {{ request('divisi') == 'Marketing' ? 'selected' : '' }}>Marketing</option>
+						<option value="Team Leader Kredit Bumi" {{ request('divisi') == 'Team Leader Kredit Bumi' ? 'selected' : '' }}>Team Leader Kredit Bumi</option>
+						<option value="Marketing Kredit Komersil Cabang Singaraja" {{ request('divisi') == 'Marketing Kredit Komersil Cabang Singaraja' ? 'selected' : '' }}>Marketing Kredit Komersil Cabang Singaraja</option>
+						<option value="Marketing Kredit Mikro Cabang Singaraja" {{ request('divisi') == 'Marketing Kredit Mikro Cabang Singaraja' ? 'selected' : '' }}>Marketing Kredit Mikro Cabang Singaraja</option>
+						<option value="Marketing Kredit Bumi Singaraja" {{ request('divisi') == 'Marketing Kredit Bumi Singaraja' ? 'selected' : '' }}>Marketing Kredit Bumi Singaraja</option>
+						<option value="Teller Kantor Cabang Singaraja" {{ request('divisi') == 'Teller Kantor Cabang Singaraja' ? 'selected' : '' }}>Teller Kantor Cabang Singaraja</option>
+						<option value="Funding Officer Kantor Cabang Singaraja" {{ request('divisi') == 'Funding Officer Kantor Cabang Singaraja' ? 'selected' : '' }}>Funding Officer Kantor Cabang Singaraja</option>
+						<option value="Satpam Kantor Cabang Singaraja" {{ request('divisi') == 'Satpam Kantor Cabang Singaraja' ? 'selected' : '' }}>Satpam Kantor Cabang Singaraja</option>
+						<option value="Team Leader Bisnis Kantor Cabang Singaraja" {{ request('divisi') == 'Team Leader Bisnis Kantor Cabang Singaraja' ? 'selected' : '' }}>Team Leader Bisnis Kantor Cabang Singaraja</option>
+						<option value="Analis Kredit Kantor Cabang Singaraja" {{ request('divisi') == 'Analis Kredit Kantor Cabang Singaraja' ? 'selected' : '' }}>Analis Kredit Kantor Cabang Singaraja</option>
+						<option value="P.E. Operasional & Layanan Kantor Cabang Singaraja" {{ request('divisi') == 'P.E. Operasional & Layanan Kantor Cabang Singaraja' ? 'selected' : '' }}>P.E. Operasional & Layanan Kantor Cabang Singaraja</option>
+						<option value="Accounting Kantor Cabang Singaraja" {{ request('divisi') == 'Accounting Kantor Cabang Singaraja' ? 'selected' : '' }}>Accounting Kantor Cabang Singaraja</option>
+						<option value="Komisaris" {{ request('divisi') == 'Komisaris' ? 'selected' : '' }}>Komisaris</option>
+						<option value="Komisaris Utama" {{ request('divisi') == 'Komisaris Utama' ? 'selected' : '' }}>Komisaris Utama</option>
+						<option value="Direktur Utama" {{ request('divisi') == 'Direktur Utama' ? 'selected' : '' }}>Direktur Utama</option>
+						<option value="Direktur" {{ request('divisi') == 'Direktur' ? 'selected' : '' }}>Direktur</option>
+						<option value="Marketing Funding 1" {{ request('divisi') == 'Marketing Funding 1' ? 'selected' : '' }}>Marketing Funding 1</option>
+						<option value="Marketing Kredit Mikro" {{ request('divisi') == 'Marketing Kredit Mikro' ? 'selected' : '' }}>Marketing Kredit Mikro</option>
+						<option value="Accounting Kantor Pusat" {{ request('divisi') == 'Accounting Kantor Pusat' ? 'selected' : '' }}>Accounting Kantor Pusat</option>
+						<option value="Satpam Kantor Pusat" {{ request('divisi') == 'Satpam Kantor Pusat' ? 'selected' : '' }}>Satpam Kantor Pusat</option>
+						<option value="P.E. Teknologi Informasi" {{ request('divisi') == 'P.E. Teknologi Informasi' ? 'selected' : '' }}>P.E. Teknologi Informasi</option>
+						<option value="Koordinator Keamanan" {{ request('divisi') == 'Koordinator Keamanan' ? 'selected' : '' }}>Koordinator Keamanan</option>
+						<option value="Analis Kredit Kantor Pusat" {{ request('divisi') == 'Analis Kredit Kantor Pusat' ? 'selected' : '' }}>Analis Kredit Kantor Pusat</option>
+						<option value="Backend Developer Programmer" {{ request('divisi') == 'Backend Developer Programmer' ? 'selected' : '' }}>Backend Developer Programmer</option>
+						<option value="P.E. Internal Audit" {{ request('divisi') == 'P.E. Internal Audit' ? 'selected' : '' }}>P.E. Internal Audit</option>
+						<option value="Driver" {{ request('divisi') == 'Driver' ? 'selected' : '' }}>Driver</option>
+						<option value="Admin Kepatuhan" {{ request('divisi') == 'Admin Kepatuhan' ? 'selected' : '' }}>Admin Kepatuhan</option>
+						<option value="Admin Legal" {{ request('divisi') == 'Admin Legal' ? 'selected' : '' }}>Admin Legal</option>
+						<option value="Team Leader Kredit Mikro" {{ request('divisi') == 'Team Leader Kredit Mikro' ? 'selected' : '' }}>Team Leader Kredit Mikro</option>
+						<option value="Remedial" {{ request('divisi') == 'Remedial' ? 'selected' : '' }}>Remedial</option>
+						<option value="Appraisal" {{ request('divisi') == 'Appraisal' ? 'selected' : '' }}>Appraisal</option>
+						<option value="Karyawan Tetap" {{ request('divisi') == 'Karyawan Tetap' ? 'selected' : '' }}>Karyawan Tetap</option>
+						<option value="Kliring" {{ request('divisi') == 'Kliring' ? 'selected' : '' }}>Kliring</option>
+						<option value="P.E. Risiko Kredit" {{ request('divisi') == 'P.E. Risiko Kredit' ? 'selected' : '' }}>P.E. Risiko Kredit</option>
+						<option value="P.E. Kepatuhan" {{ request('divisi') == 'P.E. Kepatuhan' ? 'selected' : '' }}>P.E. Kepatuhan</option>
+						<option value="Marketing Funding 2" {{ request('divisi') == 'Marketing Funding 2' ? 'selected' : '' }}>Marketing Funding 2</option>
+						<option value="Junior HR" {{ request('divisi') == 'Junior HR' ? 'selected' : '' }}>Junior HR</option>
+						<option value="P.E. Treasury" {{ request('divisi') == 'P.E. Treasury' ? 'selected' : '' }}>P.E. Treasury</option>
+						<option value="P.E. Operasional & Layanan Kantor Pusat" {{ request('divisi') == 'P.E. Operasional & Layanan Kantor Pusat' ? 'selected' : '' }}>P.E. Operasional & Layanan Kantor Pusat</option>
+						<option value="Teller Kantor Pusat" {{ request('divisi') == 'Teller Kantor Pusat' ? 'selected' : '' }}>Teller Kantor Pusat</option>
+						<option value="Cleaning Service" {{ request('divisi') == 'Cleaning Service' ? 'selected' : '' }}>Cleaning Service</option>
+						<option value="Analis Kredit Kantor Cabang Semarapura" {{ request('divisi') == 'Analis Kredit Kantor Cabang Semarapura' ? 'selected' : '' }}>Analis Kredit Kantor Cabang Semarapura</option>
+						<option value="Admin Kredit" {{ request('divisi') == 'Admin Kredit' ? 'selected' : '' }}>Admin Kredit</option>
+						<option value="P.E. Funding 1" {{ request('divisi') == 'P.E. Funding 1' ? 'selected' : '' }}>P.E. Funding 1</option>
+						<option value="Customer Service Kantor Pusat" {{ request('divisi') == 'Customer Service Kantor Pusat' ? 'selected' : '' }}>Customer Service Kantor Pusat</option>
+						<option value="P.E. SDM dan Umum" {{ request('divisi') == 'P.E. SDM dan Umum' ? 'selected' : '' }}>P.E. SDM dan Umum</option>
+						<option value="Koordinator Project Kredit Sertifikasi Guru" {{ request('divisi') == 'Koordinator Project Kredit Sertifikasi Guru' ? 'selected' : '' }}>Koordinator Project Kredit Sertifikasi Guru</option>
+						<option value="P.E. Funding 2" {{ request('divisi') == 'P.E. Funding 2' ? 'selected' : '' }}>P.E. Funding 2</option>
+						<option value="Teller Kantor Cabang Semarapura" {{ request('divisi') == 'Teller Kantor Cabang Semarapura' ? 'selected' : '' }}>Teller Kantor Cabang Semarapura</option>
+						<option value="Accounting Kantor Cabang Semarapura" {{ request('divisi') == 'Accounting Kantor Cabang Semarapura' ? 'selected' : '' }}>Accounting Kantor Cabang Semarapura</option>
+						<option value="P.E. Operasional & Layanan Kantor Cabang Semarapura" {{ request('divisi') == 'P.E. Operasional & Layanan Kantor Cabang Semarapura' ? 'selected' : '' }}>P.E. Operasional & Layanan Kantor Cabang Semarapura</option>
+						<option value="Satpam Kantor Cabang Semarapura" {{ request('divisi') == 'Satpam Kantor Cabang Semarapura' ? 'selected' : '' }}>Satpam Kantor Cabang Semarapura</option>
+						<option value="Marketing Kredit Mikro Cabang Semarapura" {{ request('divisi') == 'Marketing Kredit Mikro Cabang Semarapura' ? 'selected' : '' }}>Marketing Kredit Mikro Cabang Semarapura</option>
+						<option value="Marketing Kredit Komersil Cabang Semarapura" {{ request('divisi') == 'Marketing Kredit Komersil Cabang Semarapura' ? 'selected' : '' }}>Marketing Kredit Komersil Cabang Semarapura</option>
 					</select>
 				</div>
 
@@ -122,7 +170,7 @@
 						<th>Jabatan</th>
 						<th>Divisi</th>
 						<th>Bulan</th>
-						<th>Kualitas & Kuantitas</th>
+						<th>Kinerja</th>
 						<th>Sikap Kerja</th>
 						<th>Skor</th>
 						<th>Aksi</th>
@@ -161,7 +209,7 @@
 								@csrf
 								@method('DELETE')
 								<button type="button" class="btn btn-outline-danger btn-delete" data-name="{{ $res['name'] ?? 'data ini' }}">
-									<i class="fa fa-trash"></i> Delete
+									<i class="fa fa-trash"></i>
 								</button>
 							</form>
 						</td>
@@ -176,10 +224,168 @@
 				</tbody>
 			</table>
 
+
 			{{-- Pagination --}}
 			<nav>
 				<ul class="pagination justify-content-end" id="pagination"></ul>
 			</nav>
+
+			<hr class="my-4">
+
+			<div class="text-center mb-3">
+				<h5><b>Pilih Kategori Kinerja</b></h5>
+			</div>
+
+			<!-- Tambahkan di bawah tabel hasil -->
+			<div class="container mt-4">
+				<!-- Pilih Divisi -->
+				<div class="row mb-4 align-items-end justify-content-center">
+					<div class="col-md-4">
+						<label for="division" class="form-label fw-bold">Pilih Divisi</label>
+						<select id="division" class="form-select select2" name="division">
+							<option value="">-- Semua Divisi --</option>
+							<option value="Team Leader Kredit Bumi" {{ request('divisi') == 'Team Leader Kredit Bumi' ? 'selected' : '' }}>Team Leader Kredit Bumi</option>
+							<option value="Marketing Kredit Komersil Cabang Singaraja" {{ request('divisi') == 'Marketing Kredit Komersil Cabang Singaraja' ? 'selected' : '' }}>Marketing Kredit Komersil Cabang Singaraja</option>
+							<option value="Marketing Kredit Mikro Cabang Singaraja" {{ request('divisi') == 'Marketing Kredit Mikro Cabang Singaraja' ? 'selected' : '' }}>Marketing Kredit Mikro Cabang Singaraja</option>
+							<option value="Marketing Kredit Bumi Singaraja" {{ request('divisi') == 'Marketing Kredit Bumi Singaraja' ? 'selected' : '' }}>Marketing Kredit Bumi Singaraja</option>
+							<option value="Teller Kantor Cabang Singaraja" {{ request('divisi') == 'Teller Kantor Cabang Singaraja' ? 'selected' : '' }}>Teller Kantor Cabang Singaraja</option>
+							<option value="Funding Officer Kantor Cabang Singaraja" {{ request('divisi') == 'Funding Officer Kantor Cabang Singaraja' ? 'selected' : '' }}>Funding Officer Kantor Cabang Singaraja</option>
+							<option value="Satpam Kantor Cabang Singaraja" {{ request('divisi') == 'Satpam Kantor Cabang Singaraja' ? 'selected' : '' }}>Satpam Kantor Cabang Singaraja</option>
+							<option value="Team Leader Bisnis Kantor Cabang Singaraja" {{ request('divisi') == 'Team Leader Bisnis Kantor Cabang Singaraja' ? 'selected' : '' }}>Team Leader Bisnis Kantor Cabang Singaraja</option>
+							<option value="Analis Kredit Kantor Cabang Singaraja" {{ request('divisi') == 'Analis Kredit Kantor Cabang Singaraja' ? 'selected' : '' }}>Analis Kredit Kantor Cabang Singaraja</option>
+							<option value="P.E. Operasional & Layanan Kantor Cabang Singaraja" {{ request('divisi') == 'P.E. Operasional & Layanan Kantor Cabang Singaraja' ? 'selected' : '' }}>P.E. Operasional & Layanan Kantor Cabang Singaraja</option>
+							<option value="Accounting Kantor Cabang Singaraja" {{ request('divisi') == 'Accounting Kantor Cabang Singaraja' ? 'selected' : '' }}>Accounting Kantor Cabang Singaraja</option>
+							<option value="Komisaris" {{ request('divisi') == 'Komisaris' ? 'selected' : '' }}>Komisaris</option>
+							<option value="Komisaris Utama" {{ request('divisi') == 'Komisaris Utama' ? 'selected' : '' }}>Komisaris Utama</option>
+							<option value="Direktur Utama" {{ request('divisi') == 'Direktur Utama' ? 'selected' : '' }}>Direktur Utama</option>
+							<option value="Direktur" {{ request('divisi') == 'Direktur' ? 'selected' : '' }}>Direktur</option>
+							<option value="Marketing Funding 1" {{ request('divisi') == 'Marketing Funding 1' ? 'selected' : '' }}>Marketing Funding 1</option>
+							<option value="Marketing Kredit Mikro" {{ request('divisi') == 'Marketing Kredit Mikro' ? 'selected' : '' }}>Marketing Kredit Mikro</option>
+							<option value="Accounting Kantor Pusat" {{ request('divisi') == 'Accounting Kantor Pusat' ? 'selected' : '' }}>Accounting Kantor Pusat</option>
+							<option value="Satpam Kantor Pusat" {{ request('divisi') == 'Satpam Kantor Pusat' ? 'selected' : '' }}>Satpam Kantor Pusat</option>
+							<option value="P.E. Teknologi Informasi" {{ request('divisi') == 'P.E. Teknologi Informasi' ? 'selected' : '' }}>P.E. Teknologi Informasi</option>
+							<option value="Koordinator Keamanan" {{ request('divisi') == 'Koordinator Keamanan' ? 'selected' : '' }}>Koordinator Keamanan</option>
+							<option value="Analis Kredit Kantor Pusat" {{ request('divisi') == 'Analis Kredit Kantor Pusat' ? 'selected' : '' }}>Analis Kredit Kantor Pusat</option>
+							<option value="Backend Developer Programmer" {{ request('divisi') == 'Backend Developer Programmer' ? 'selected' : '' }}>Backend Developer Programmer</option>
+							<option value="P.E. Internal Audit" {{ request('divisi') == 'P.E. Internal Audit' ? 'selected' : '' }}>P.E. Internal Audit</option>
+							<option value="Driver" {{ request('divisi') == 'Driver' ? 'selected' : '' }}>Driver</option>
+							<option value="Admin Kepatuhan" {{ request('divisi') == 'Admin Kepatuhan' ? 'selected' : '' }}>Admin Kepatuhan</option>
+							<option value="Admin Legal" {{ request('divisi') == 'Admin Legal' ? 'selected' : '' }}>Admin Legal</option>
+							<option value="Team Leader Kredit Mikro" {{ request('divisi') == 'Team Leader Kredit Mikro' ? 'selected' : '' }}>Team Leader Kredit Mikro</option>
+							<option value="Remedial" {{ request('divisi') == 'Remedial' ? 'selected' : '' }}>Remedial</option>
+							<option value="Appraisal" {{ request('divisi') == 'Appraisal' ? 'selected' : '' }}>Appraisal</option>
+							<option value="Karyawan Tetap" {{ request('divisi') == 'Karyawan Tetap' ? 'selected' : '' }}>Karyawan Tetap</option>
+							<option value="Kliring" {{ request('divisi') == 'Kliring' ? 'selected' : '' }}>Kliring</option>
+							<option value="P.E. Risiko Kredit" {{ request('divisi') == 'P.E. Risiko Kredit' ? 'selected' : '' }}>P.E. Risiko Kredit</option>
+							<option value="P.E. Kepatuhan" {{ request('divisi') == 'P.E. Kepatuhan' ? 'selected' : '' }}>P.E. Kepatuhan</option>
+							<option value="Marketing Funding 2" {{ request('divisi') == 'Marketing Funding 2' ? 'selected' : '' }}>Marketing Funding 2</option>
+							<option value="Junior HR" {{ request('divisi') == 'Junior HR' ? 'selected' : '' }}>Junior HR</option>
+							<option value="P.E. Treasury" {{ request('divisi') == 'P.E. Treasury' ? 'selected' : '' }}>P.E. Treasury</option>
+							<option value="P.E. Operasional & Layanan Kantor Pusat" {{ request('divisi') == 'P.E. Operasional & Layanan Kantor Pusat' ? 'selected' : '' }}>P.E. Operasional & Layanan Kantor Pusat</option>
+							<option value="Teller Kantor Pusat" {{ request('divisi') == 'Teller Kantor Pusat' ? 'selected' : '' }}>Teller Kantor Pusat</option>
+							<option value="Cleaning Service" {{ request('divisi') == 'Cleaning Service' ? 'selected' : '' }}>Cleaning Service</option>
+							<option value="Analis Kredit Kantor Cabang Semarapura" {{ request('divisi') == 'Analis Kredit Kantor Cabang Semarapura' ? 'selected' : '' }}>Analis Kredit Kantor Cabang Semarapura</option>
+							<option value="Admin Kredit" {{ request('divisi') == 'Admin Kredit' ? 'selected' : '' }}>Admin Kredit</option>
+							<option value="P.E. Funding 1" {{ request('divisi') == 'P.E. Funding 1' ? 'selected' : '' }}>P.E. Funding 1</option>
+							<option value="Customer Service Kantor Pusat" {{ request('divisi') == 'Customer Service Kantor Pusat' ? 'selected' : '' }}>Customer Service Kantor Pusat</option>
+							<option value="P.E. SDM dan Umum" {{ request('divisi') == 'P.E. SDM dan Umum' ? 'selected' : '' }}>P.E. SDM dan Umum</option>
+							<option value="Koordinator Project Kredit Sertifikasi Guru" {{ request('divisi') == 'Koordinator Project Kredit Sertifikasi Guru' ? 'selected' : '' }}>Koordinator Project Kredit Sertifikasi Guru</option>
+							<option value="P.E. Funding 2" {{ request('divisi') == 'P.E. Funding 2' ? 'selected' : '' }}>P.E. Funding 2</option>
+							<option value="Teller Kantor Cabang Semarapura" {{ request('divisi') == 'Teller Kantor Cabang Semarapura' ? 'selected' : '' }}>Teller Kantor Cabang Semarapura</option>
+							<option value="Accounting Kantor Cabang Semarapura" {{ request('divisi') == 'Accounting Kantor Cabang Semarapura' ? 'selected' : '' }}>Accounting Kantor Cabang Semarapura</option>
+							<option value="P.E. Operasional & Layanan Kantor Cabang Semarapura" {{ request('divisi') == 'P.E. Operasional & Layanan Kantor Cabang Semarapura' ? 'selected' : '' }}>P.E. Operasional & Layanan Kantor Cabang Semarapura</option>
+							<option value="Satpam Kantor Cabang Semarapura" {{ request('divisi') == 'Satpam Kantor Cabang Semarapura' ? 'selected' : '' }}>Satpam Kantor Cabang Semarapura</option>
+							<option value="Marketing Kredit Mikro Cabang Semarapura" {{ request('divisi') == 'Marketing Kredit Mikro Cabang Semarapura' ? 'selected' : '' }}>Marketing Kredit Mikro Cabang Semarapura</option>
+							<option value="Marketing Kredit Komersil Cabang Semarapura" {{ request('divisi') == 'Marketing Kredit Komersil Cabang Semarapura' ? 'selected' : '' }}>Marketing Kredit Komersil Cabang Semarapura</option>
+						</select>
+					</div>
+
+					<div class="col-md-3">
+						<label for="year" class="form-label fw-bold">Pilih Tahun</label>
+						<select name="year_kpi" id="year" class="form-select select2">
+							<option value="">-- Tahun --</option>
+							@for ($y = date('Y'); $y >= 2000; $y--)
+							<option value="{{ $y }}" {{ request('tahun_mulai') == $y ? 'selected' : '' }}>
+								{{ $y }}
+							</option>
+							@endfor
+						</select>
+					</div>
+				</div>
+
+
+				<!-- Grid Kotak -->
+				<div id="matrix-grid" class="row g-3 text-center" style="display:none;">
+					<!-- Baris 1 -->
+					<div class="col-md-4">
+						<a href="{{ url('matrix/misfit') }}" class="d-block text-decoration-none text-dark">
+							<div class="p-5 rounded-3" style="background-color: #f5c400;">
+								<h4>5. Misfit</h4>
+							</div>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="{{ url('matrix/prince-of-waiting') }}" class="d-block text-decoration-none text-dark">
+							<div class="p-5 rounded-3" style="background-color: #a6ce6e;">
+								<h4>2. Prince of waiting</h4>
+							</div>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="{{ url('matrix/star') }}" class="d-block text-decoration-none text-dark">
+							<div class="p-5 rounded-3" style="background-color: #c6df6e;">
+								<h4>1. Star</h4>
+							</div>
+						</a>
+					</div>
+
+					<!-- Baris 2 -->
+					<div class="col-md-4">
+						<a href="{{ url('matrix/critical-hit') }}" class="d-block text-decoration-none text-dark">
+							<div class="p-5 rounded-3" style="background-color: #e64000;">
+								<h4>7. Critical Hit</h4>
+							</div>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="{{ url('matrix/cadre') }}" class="d-block text-decoration-none text-dark">
+							<div class="p-5 rounded-3" style="background-color: #ffe100;">
+								<h4>4. Cadre</h4>
+							</div>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="{{ url('matrix/eagles') }}" class="d-block text-decoration-none text-dark">
+							<div class="p-5 rounded-3" style="background-color: #3e833e;">
+								<h4>3. Eagles</h4>
+							</div>
+						</a>
+					</div>
+
+					<!-- Baris 3 -->
+					<div class="col-md-4">
+						<a href="{{ url('matrix/no-hopers') }}" class="d-block text-decoration-none text-light">
+							<div class="p-5 rounded-3" style="background-color: #600000;">
+								<h4>9. No hopers</h4>
+							</div>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="{{ url('matrix/foot-soldiers') }}" class="d-block text-decoration-none text-light">
+							<div class="p-5 rounded-3" style="background-color: #7d0000;">
+								<h4>8. Foot Soldiers</h4>
+							</div>
+						</a>
+					</div>
+					<div class="col-md-4">
+						<a href="{{ url('matrix/workhorse') }}" class="d-block text-decoration-none text-dark">
+							<div class="p-5 rounded-3" style="background-color: #f59200;">
+								<h4>6. Workhorse</h4>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -221,6 +427,16 @@
 <script>
 	// ✅ Inisialisasi Select2
 	$('.select2[name="divisi"]').select2({
+		placeholder: "-- Pilih Divisi --",
+		allowClear: true,
+		width: '100%'
+	});
+	$('#division').select2({
+		placeholder: "-- Pilih Divisi --",
+		allowClear: true,
+		width: '100%'
+	});
+	$('#year_kpi').select2({
 		placeholder: "-- Pilih Divisi --",
 		allowClear: true,
 		width: '100%'
@@ -355,4 +571,38 @@
 		@endif
 	});
 </script>
+<script>
+	$(document).ready(function() {
+		// inisialisasi select2 (jika kamu pakai)
+		$('#division').select2({
+			placeholder: "-- Pilih Divisi --",
+			allowClear: true,
+			width: '100%'
+		});
+
+		$('#year').select2({
+			placeholder: "-- Pilih Tahun --",
+			allowClear: true,
+			width: '100%'
+		});
+
+		const matrixGrid = document.getElementById('matrix-grid');
+
+		function checkFilters() {
+			const divisionVal = $('#division').val();
+			const yearVal = $('#year').val();
+
+			if (divisionVal && yearVal) {
+				matrixGrid.style.display = 'flex';
+			} else {
+				matrixGrid.style.display = 'none';
+			}
+		}
+
+		$('#division, #year').on('change', checkFilters);
+
+		checkFilters();
+	});
+</script>
+
 @endpush

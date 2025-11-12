@@ -498,4 +498,21 @@ class QuestionController extends Controller
 				->with('error', 'Gagal menghapus data: ' . $e->getMessage());
 		}
 	}
+	public function category($slug)
+	{
+		$categories = [
+			'star' => 'Star',
+			'prince-in-waiting' => 'Prince in Waiting',
+			'eagles' => 'Eagles',
+			'cadre' => 'Cadre',
+			'misfit' => 'Misfit',
+			'workhorse' => 'Workhorse',
+			'kritikal-hit' => 'Kritikal Hit',
+			'foot-soldiers' => 'Foot Soldiers',
+			'no-hopers' => 'No Hopers',
+		];
+
+		$title = $categories[$slug] ?? 'Kategori Tidak Dikenal';
+		return view('questions.category', compact('title', 'slug'));
+	}
 }
