@@ -318,21 +318,21 @@
 				<div id="matrix-grid" class="row g-3 text-center" style="display:none;">
 					<!-- Baris 1 -->
 					<div class="col-md-4">
-						<a href="{{ url('matrix/misfit') }}" class="d-block text-decoration-none text-dark">
+						<a href="#" data-path="misfit" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #f5c400;">
 								<h4>5. Misfit</h4>
 							</div>
 						</a>
 					</div>
 					<div class="col-md-4">
-						<a href="{{ url('matrix/prince-of-waiting') }}" class="d-block text-decoration-none text-dark">
+						<a href="#" data-path="prince-of-waiting" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #a6ce6e;">
 								<h4>2. Prince of waiting</h4>
 							</div>
 						</a>
 					</div>
 					<div class="col-md-4">
-						<a href="{{ url('matrix/star') }}" class="d-block text-decoration-none text-dark">
+						<a href="#" data-path="star" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #c6df6e;">
 								<h4>1. Star</h4>
 							</div>
@@ -341,21 +341,21 @@
 
 					<!-- Baris 2 -->
 					<div class="col-md-4">
-						<a href="{{ url('matrix/critical-hit') }}" class="d-block text-decoration-none text-dark">
+						<a href="#" data-path="critical-hit" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #e64000;">
 								<h4>7. Critical Hit</h4>
 							</div>
 						</a>
 					</div>
 					<div class="col-md-4">
-						<a href="{{ url('matrix/cadre') }}" class="d-block text-decoration-none text-dark">
+						<a href="#" data-path="cadre" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #ffe100;">
 								<h4>4. Cadre</h4>
 							</div>
 						</a>
 					</div>
 					<div class="col-md-4">
-						<a href="{{ url('matrix/eagles') }}" class="d-block text-decoration-none text-dark">
+						<a href="#" data-path="eagles" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #3e833e;">
 								<h4>3. Eagles</h4>
 							</div>
@@ -364,21 +364,21 @@
 
 					<!-- Baris 3 -->
 					<div class="col-md-4">
-						<a href="{{ url('matrix/no-hopers') }}" class="d-block text-decoration-none text-light">
+						<a href="#" data-path="no-hopers" class="matrix-link d-block text-decoration-none text-light">
 							<div class="p-5 rounded-3" style="background-color: #600000;">
 								<h4>9. No hopers</h4>
 							</div>
 						</a>
 					</div>
 					<div class="col-md-4">
-						<a href="{{ url('matrix/foot-soldiers') }}" class="d-block text-decoration-none text-light">
+						<a href="#" data-path="foot-soldiers" class="matrix-link d-block text-decoration-none text-light">
 							<div class="p-5 rounded-3" style="background-color: #7d0000;">
 								<h4>8. Foot Soldiers</h4>
 							</div>
 						</a>
 					</div>
 					<div class="col-md-4">
-						<a href="{{ url('matrix/workhorse') }}" class="d-block text-decoration-none text-dark">
+						<a href="#" data-path="workhorse" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #f59200;">
 								<h4>6. Workhorse</h4>
 							</div>
@@ -602,6 +602,41 @@
 		$('#division, #year').on('change', checkFilters);
 
 		checkFilters();
+	});
+</script>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		const yearSelect = document.getElementById('year');
+		const divisionSelect = document.getElementById('division');
+		const matrixGrid = document.getElementById('matrix-grid');
+
+		function toggleMatrixGrid() {
+			if (yearSelect.value !== '' && divisionSelect.value !== '') {
+				matrixGrid.style.display = 'flex';
+			} else {
+				matrixGrid.style.display = 'none';
+			}
+		}
+
+		yearSelect.addEventListener('change', toggleMatrixGrid);
+		divisionSelect.addEventListener('change', toggleMatrixGrid);
+
+		document.querySelectorAll('.matrix-link').forEach(link => {
+			link.addEventListener('click', function(e) {
+				e.preventDefault();
+
+				const year = yearSelect.value;
+				const division = divisionSelect.value;
+				const path = this.getAttribute('data-path');
+
+				if (year && division) {
+					const targetUrl = `/questions/matrix/${path}?year=${year}&division=${encodeURIComponent(division)}`;
+					window.location.href = targetUrl;
+				} else {
+					alert('Silakan pilih Tahun dan Divisi terlebih dahulu!');
+				}
+			});
+		});
 	});
 </script>
 

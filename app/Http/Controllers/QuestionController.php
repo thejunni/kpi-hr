@@ -515,4 +515,98 @@ class QuestionController extends Controller
 		$title = $categories[$slug] ?? 'Kategori Tidak Dikenal';
 		return view('questions.category', compact('title', 'slug'));
 	}
+	public function matrixShow(Request $request, $type)
+	{
+		// Ambil query string dari URL
+		$division = $request->query('division');
+		$year = $request->query('year');
+
+		// Query ke tabel score_kpi
+		$query = Question::query();
+
+		// Filter divisi
+		if (!empty($division)) {
+			$query->where('divisi', $division);
+		}
+
+		// Filter tahun
+		if (!empty($year)) {
+			$query->where('tahun', $year);
+		}
+
+		// Tentukan kategori matrix berdasarkan total_score
+		switch ($type) {
+			case 'star':
+				$query->where('total_score', '>=', 85);
+				$matrixTitle = 'Star Performer';
+				$color = '#c6df6e';
+				break;
+
+			case 'prince-of-waiting':
+				$query->whereBetween('total_score', [75, 84]);
+				$matrixTitle = 'Prince in Waiting';
+				$color = '#a6ce6e';
+				break;
+
+			case 'misfit':
+				$query->whereBetween('total_score', [60, 74]);
+				$matrixTitle = 'Misfits';
+				$color = '#f5c400';
+				break;
+
+			case 'critical-hit':
+				$query->whereBetween('total_score', [45, 59]);
+				$matrixTitle = 'Critical List';
+				$color = '#e64000';
+				break;
+
+			case 'no-hopers':
+				$query->where('total_score', '<', 45);
+				$matrixTitle = 'No Hopers';
+				$color = '#600000';
+				break;
+
+			case 'cadre':
+				$query->whereBetween('total_score', [70, 84]);
+				$matrixTitle = 'Cadre';
+				$color = '#ffe100';
+				break;
+
+			case 'eagles':
+				$query->where('total_score', '>=', 85);
+				$matrixTitle = 'Eagles';
+				$color = '#3e833e';
+				break;
+
+			case 'workhorse':
+				$query->whereBetween('total_score', [55, 69]);
+				$matrixTitle = 'Workhorse';
+				$color = '#f59200';
+				break;
+
+			case 'foot-soldiers':
+				$query->whereBetween('total_score', [40, 54]);
+				$matrixTitle = 'Foot Soldiers';
+				$color = '#7d0000';
+				break;
+
+			default:
+				$matrixTitle = 'Matrix Result';
+				$color = '#999';
+				break;
+		}
+
+		// Ambil hasil dari database
+		$questions = $query->orderByDesc('total_score')->get();
+
+		// Kirim data ke view
+		return view('matrix.show', compact(
+			'questions',  // data hasil query
+			'type',       // jenis matrix (misfit, star, dll)
+			'matrixTitle', // judul matrix
+			'color',      // warna tema
+			'division',   // filter divisi
+			'year'        // filter tahun
+		));
+	}
 }
