@@ -122,22 +122,48 @@
 						<th>Jabatan</th>
 						<th>Divisi</th>
 						<th>Bulan</th>
+						<th>Kualitas & Kuantitas</th>
+						<th>Sikap Kerja</th>
 						<th>Skor</th>
+						<th>Aksi</th>
 					</tr>
 				</thead>
 				<tbody>
 					@forelse($results as $res)
 					<tr>
 						<td>{{ $loop->iteration }}</td>
-						<td>{{ $res->name }}</td>
-						<td>{{ $res->nik }}</td>
-						<td>{{ $res->jabatan }}</td>
-						<td>{{ $res->divisi }}</td>
-						<td>{{ $res->bulan ? strtoupper($res->bulan) : "-" }}</td>
+						<td>
+							<span class="text-ellipsis" title="{{ $res['name'] }}">
+								{{ $res['name'] }}
+							</span>
+						</td>
+						<td>{{ $res['nik'] }}</td>
+						<td>{{ $res['jabatan'] }}</td>
+						<td>{{ $res['divisi'] }}</td>
+						<td>{{ $res['bulan'] ? strtoupper($res['bulan']) : "-" }}</td>
+						<td>
+							<span class="badge bg-primary px-3 py-2">
+								{{ $res['kualitas_dan_kuantitas'] }}
+							</span>
+						</td>
+						<td>
+							<span class="badge bg-warning px-3 py-2">
+								{{ $res['sikap_kerja'] }}
+							</span>
+						</td>
 						<td>
 							<span class="badge bg-success px-3 py-2">
-								{{ number_format($res->avg_score, 2) }}
+								{{ number_format($res['total_nilai'], 2) }}
 							</span>
+						</td>
+						<td>
+							<form action="{{ route('questions.destroy', $res['id']) }}" method="POST" class="delete-form d-inline">
+								@csrf
+								@method('DELETE')
+								<button type="button" class="btn btn-outline-danger btn-delete" data-name="{{ $res['name'] ?? 'data ini' }}">
+									<i class="fa fa-trash"></i> Delete
+								</button>
+							</form>
 						</td>
 					</tr>
 					@empty
@@ -180,6 +206,15 @@
 	.card-title {
 		font-size: 1.1rem;
 		font-weight: 600;
+	}
+
+	.text-ellipsis {
+		max-width: 250px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		display: inline-block;
+		vertical-align: middle;
 	}
 </style>
 
@@ -256,6 +291,68 @@
 				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
 			});
 		});
+	});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+		// Tombol delete dengan SweetAlert
+		const deleteButtons = document.querySelectorAll('.btn-delete');
+
+		deleteButtons.forEach(button => {
+			button.addEventListener('click', function(e) {
+				e.preventDefault();
+
+				const form = this.closest('form');
+				const itemName = this.getAttribute('data-name');
+
+				Swal.fire({
+					title: 'Yakin ingin menghapus?',
+					text: `Data ${itemName} akan dihapus secara permanen.`,
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: 'Ya, hapus!',
+					cancelButtonText: 'Batal'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						// Tampilkan loading sebentar
+						Swal.fire({
+							title: 'Menghapus...',
+							text: 'Mohon tunggu sebentar.',
+							allowOutsideClick: false,
+							didOpen: () => {
+								Swal.showLoading()
+							}
+						});
+
+						form.submit();
+					}
+				});
+			});
+		});
+
+		@if(session('success'))
+		Swal.fire({
+			icon: 'success',
+			title: 'Berhasil',
+			text: '{{ session('
+			success ') }}',
+			timer: 2000,
+			showConfirmButton: false
+		});
+		@endif
+
+		@if(session('error'))
+		Swal.fire({
+			icon: 'error',
+			title: 'Gagal',
+			text: '{{ session('
+			error ') }}'
+		});
+		@endif
 	});
 </script>
 @endpush

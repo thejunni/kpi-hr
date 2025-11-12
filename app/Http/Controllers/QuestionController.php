@@ -6,6 +6,7 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Models\Question;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class QuestionController extends Controller
@@ -272,7 +273,7 @@ class QuestionController extends Controller
         return view('questions.result', compact('results', 'divisi', 'divisions'));
     }
 
-    public function result(Request $request)
+	public function result3(Request $request)
     {
         $divisi = $request->get('divisi');
 		$bulan = strtolower($request->get('bulan'));
@@ -324,6 +325,86 @@ class QuestionController extends Controller
 
 		return view('questions.result', compact('results', 'divisions', 'bulans'));
     }
+	public function result(Request $request)
+	{
+		$divisi = $request->get('divisi');
+		$bulan = strtolower($request->get('bulan'));
+		$tahunMulai = $request->get('tahun_mulai');
+		$tahunAkhir = $request->get('tahun_akhir');
+
+		$query = Question::select(
+			'id',
+			'name',
+			'nik',
+			'jabatan',
+			'divisi',
+			'bulan',
+			'answers',
+			'total_score'
+		);
+
+		if ($divisi) {
+			$query->where('divisi', $divisi);
+		}
+
+		if ($bulan) {
+			$query->where('bulan', $bulan);
+		}
+
+		$driver = DB::getDriverName();
+
+		if ($tahunMulai && $tahunAkhir) {
+			if ($driver === 'mysql') {
+				$query->whereBetween(DB::raw('YEAR(created_at)'), [$tahunMulai, $tahunAkhir]);
+			} else {
+				$query->whereBetween(DB::raw("EXTRACT(YEAR FROM created_at)"), [$tahunMulai, $tahunAkhir]);
+			}
+		} elseif ($tahunMulai) {
+			if ($driver === 'mysql') {
+				$query->whereYear('created_at', $tahunMulai);
+			} else {
+				$query->whereRaw("EXTRACT(YEAR FROM created_at) = ?", [$tahunMulai]);
+			}
+		}
+
+		$records = $query->get();
+
+		// Proses hasil JSON dan kelompokkan
+		$results = $records->map(function ($item) {
+			$answers = is_string($item->answers)
+				? json_decode($item->answers, true)
+				: $item->answers;
+
+			if (!$answers) {
+				return null;
+			}
+			// choice pertama → Kualitas & Kuantitas
+			$kualitas = $answers[0]['score'] ?? 0;
+
+			// sisanya → Sikap Kerja
+			$sikap = collect($answers)->skip(1)->sum('score');
+
+			// total = semua skor
+			$total = collect($answers)->sum('score');
+
+			return [
+				'id' => $item->id,
+				'name' => $item->name,
+				'nik' => $item->nik,
+				'jabatan' => $item->jabatan,
+				'divisi' => $item->divisi,
+				'bulan' => $item->bulan,
+				'kualitas_dan_kuantitas' => $kualitas,
+				'sikap_kerja' => $sikap,
+				'total_nilai' => $total,
+			];
+		})->filter();
+
+		$divisions = Question::select('divisi')->distinct()->pluck('divisi');
+		$bulans = Question::select('bulan')->distinct()->pluck('bulan');
+
+		return view('questions.result', compact('results', 'divisions', 'bulans'));
+	}
 
 	public function downloadPdf(Request $request)
 	{
@@ -388,8 +469,7 @@ class QuestionController extends Controller
 	        'results'    => $results,
 	        'divisi'     => $divisi,
 	        'tahunMulai' => $tahunMulai,
-	        'tahunAkhir' => $tahunAkhir,
-	        // kirim tanggal sekarang dengan format terjemahan
+			'tahunAkhir' => $tahunAkhir,
 	        'tanggalCetak' => Carbon::now()->translatedFormat('d F Y')
 	    ]);
 
@@ -399,4 +479,23 @@ class QuestionController extends Controller
 	    return $pdf->download($fileName);
 	}
 
+	public function destroy($id)
+	{
+		try {
+			$question = Question::findOrFail($id);
+
+			if (!$question) {
+				return redirect()->back()->with('error', 'Data tidak ditemukan.');
+			}
+			$question->delete();
+
+			return redirect()
+				->route('questions.result')
+				->with('success', 'Data berhasil dihapus.');
+		} catch (\Exception $e) {
+			return redirect()
+				->route('questions.result')
+				->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+		}
+	}
 }
