@@ -172,6 +172,8 @@
 						<th>Bulan</th>
 						<th>Kinerja</th>
 						<th>Sikap Kerja</th>
+						<th>Kategotri</th>
+						<th>Keterangan</th>
 						<th>Skor</th>
 						<th>Aksi</th>
 					</tr>
@@ -197,6 +199,16 @@
 						<td>
 							<span class="badge bg-warning px-3 py-2">
 								{{ $res['sikap_kerja'] }}
+							</span>
+						</td>
+						<td>
+							<span class="badge bg-success px-3 py-2">
+								{{ $res['category'] }}
+							</span>
+						</td>
+						<td>
+							<span class="badge bg-info px-3 py-2">
+								{{ $res['description'] }}
 							</span>
 						</td>
 						<td>
@@ -301,8 +313,8 @@
 					</div>
 
 					<div class="col-md-3">
-						<label for="year" class="form-label fw-bold">Pilih Tahun</label>
-						<select name="year_kpi" id="year" class="form-select select2">
+						<label for="year_kpi" class="form-label fw-bold">Pilih Tahun</label>
+						<select name="year_kpi2" id="year_kpi" class="form-select select2">
 							<option value="">-- Tahun --</option>
 							@for ($y = date('Y'); $y >= 2000; $y--)
 							<option value="{{ $y }}" {{ request('tahun_mulai') == $y ? 'selected' : '' }}>
@@ -321,6 +333,7 @@
 						<a href="#" data-path="misfit" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #f5c400;">
 								<h4>5. Misfit</h4>
+								<div>({{ $categoryCountsFinal['Misfit'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
@@ -328,13 +341,15 @@
 						<a href="#" data-path="prince-of-waiting" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #a6ce6e;">
 								<h4>2. Prince of waiting</h4>
+								<div>({{ $categoryCountsFinal['Prince of Waiting'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
 					<div class="col-md-4">
-						<a href="#" data-path="star" class="matrix-link d-block text-decoration-none text-dark">
+						<a href="#" data-path="stars" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #c6df6e;">
 								<h4>1. Star</h4>
+								<div>({{ $categoryCountsFinal['Stars'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
@@ -344,6 +359,7 @@
 						<a href="#" data-path="critical-hit" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #e64000;">
 								<h4>7. Critical Hit</h4>
+								<div>({{ $categoryCountsFinal['Critical Hit'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
@@ -351,6 +367,7 @@
 						<a href="#" data-path="cadre" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #ffe100;">
 								<h4>4. Cadre</h4>
+								<div>({{ $categoryCountsFinal['Cadre'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
@@ -358,6 +375,7 @@
 						<a href="#" data-path="eagles" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #3e833e;">
 								<h4>3. Eagles</h4>
+								<div>({{ $categoryCountsFinal['Eagles'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
@@ -366,7 +384,8 @@
 					<div class="col-md-4">
 						<a href="#" data-path="no-hopers" class="matrix-link d-block text-decoration-none text-light">
 							<div class="p-5 rounded-3" style="background-color: #600000;">
-								<h4>9. No hopers</h4>
+								<h4>9. No Hopers</h4>
+								<div>({{ $categoryCountsFinal['No Hopers'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
@@ -374,6 +393,7 @@
 						<a href="#" data-path="foot-soldiers" class="matrix-link d-block text-decoration-none text-light">
 							<div class="p-5 rounded-3" style="background-color: #7d0000;">
 								<h4>8. Foot Soldiers</h4>
+								<div>({{ $categoryCountsFinal['Foot Soldiers'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
@@ -381,6 +401,7 @@
 						<a href="#" data-path="workhorse" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #f59200;">
 								<h4>6. Workhorse</h4>
+								<div>({{ $categoryCountsFinal['Workhorse'] }} Karyawan)</div>
 							</div>
 						</a>
 					</div>
@@ -436,8 +457,9 @@
 		allowClear: true,
 		width: '100%'
 	});
+	// $('.select2["year_kpi"]').select2({
 	$('#year_kpi').select2({
-		placeholder: "-- Pilih Divisi --",
+		placeholder: "-- Pilih Tahun --",
 		allowClear: true,
 		width: '100%'
 	});
@@ -572,71 +594,81 @@
 	});
 </script>
 <script>
-	$(document).ready(function() {
-		// inisialisasi select2 (jika kamu pakai)
-		$('#division').select2({
-			placeholder: "-- Pilih Divisi --",
-			allowClear: true,
-			width: '100%'
-		});
-
-		$('#year').select2({
-			placeholder: "-- Pilih Tahun --",
-			allowClear: true,
-			width: '100%'
-		});
-
-		const matrixGrid = document.getElementById('matrix-grid');
-
-		function checkFilters() {
-			const divisionVal = $('#division').val();
-			const yearVal = $('#year').val();
-
-			if (divisionVal && yearVal) {
-				matrixGrid.style.display = 'flex';
-			} else {
-				matrixGrid.style.display = 'none';
-			}
-		}
-
-		$('#division, #year').on('change', checkFilters);
-
-		checkFilters();
-	});
-</script>
-<script>
 	document.addEventListener('DOMContentLoaded', function() {
-		const yearSelect = document.getElementById('year');
-		const divisionSelect = document.getElementById('division');
+
 		const matrixGrid = document.getElementById('matrix-grid');
 
 		function toggleMatrixGrid() {
-			if (yearSelect.value !== '' && divisionSelect.value !== '') {
-				matrixGrid.style.display = 'flex';
-			} else {
-				matrixGrid.style.display = 'none';
-			}
+			const yearVal = $('#year_kpi').val();
+			matrixGrid.style.display = yearVal ? 'flex' : 'none';
 		}
 
-		yearSelect.addEventListener('change', toggleMatrixGrid);
-		divisionSelect.addEventListener('change', toggleMatrixGrid);
+		$('#year_kpi').on('change', function() {
+			toggleMatrixGrid();
+			fetchMatrixCounts(); // <-- update matrix
+		});
 
+		$('#division').on('change', function() {
+			toggleMatrixGrid();
+			fetchMatrixCounts(); // <-- update matrix
+		});
+
+		toggleMatrixGrid();
+
+		function fetchMatrixCounts() {
+			const year = $('#year_kpi').val();
+			const division = $('#division').val();
+
+			if (!year) return; // kalau tahun belum dipilih, tidak fetch
+
+			$.ajax({
+				url: '/questions/matrix-count',
+				type: 'GET',
+				data: {
+					year: year,
+					division: division
+				},
+				success: function(response) {
+					window.categoryCounts = response; // simpan global
+					updateCategoryCounts();
+				}
+			});
+		}
+
+		function updateCategoryCounts() {
+			document.querySelectorAll('.matrix-link').forEach(box => {
+				const cat = box.dataset.category;
+				const total = window.categoryCounts[cat] ?? 0;
+
+				const counter = box.querySelector('.employee-count');
+				if (counter) {
+					counter.textContent = `(${total} Karyawan)`;
+				}
+			});
+		}
+
+
+		// --- Klik Matrix Box ---
 		document.querySelectorAll('.matrix-link').forEach(link => {
 			link.addEventListener('click', function(e) {
 				e.preventDefault();
 
-				const year = yearSelect.value;
-				const division = divisionSelect.value;
-				const path = this.getAttribute('data-path');
+				const year = $('#year_kpi').val();
+				const division = $('#division').val();
+				const path = this.dataset.path;
 
-				if (year && division) {
-					const targetUrl = `/questions/matrix/${path}?year=${year}&division=${encodeURIComponent(division)}`;
-					window.location.href = targetUrl;
-				} else {
-					alert('Silakan pilih Tahun dan Divisi terlebih dahulu!');
+				if (!year) {
+					alert("Silakan pilih Tahun terlebih dahulu!");
+					return;
 				}
+
+				const targetUrl =
+					`/questions/matrix/${path}?year=${year}&division=${encodeURIComponent(division || "")}`;
+
+				window.location.href = targetUrl;
 			});
 		});
+
 	});
 </script>
 

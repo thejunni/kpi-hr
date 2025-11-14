@@ -105,8 +105,8 @@ class QuestionController extends Controller
 		return view('questions.index', compact('questions', 'employees'));
 	}
 
-    // Proses submit form
-    public function answer(Request $request)
+	// Proses submit form
+	public function answer(Request $request)
 	{
 		$request->validate([
 			'employee_id' => 'required|exists:employees,id',
@@ -114,10 +114,7 @@ class QuestionController extends Controller
 			'bulan'   => 'required|string',
 		]);
 
-		// 🔹 Ambil employee dari DB
 		$employee = Employee::findOrFail($request->employee_id);
-
-		// 🔹 Ambil pertanyaan
 		$questions = $this->getQuestions();
 
 		$totalScore = 0;
@@ -133,7 +130,9 @@ class QuestionController extends Controller
 			$totalScore += $score;
 		}
 
-		// 🔹 Hitung pengurangan jika ada SP
+		$totalScorePotential = array_sum(array_column(array_slice($answersWithScore, 1), 'score'));
+
+		// SP logic
 		$spLevel = $request->input('sp_level', 0);
 		$pengurangan = match ($spLevel) {
 			1 => 10,
@@ -144,25 +143,69 @@ class QuestionController extends Controller
 
 		$totalScore = max(0, $totalScore - $pengurangan);
 
-		// 🔹 Payload sesuai struktur tabel score_kpi
-		$payloads = [
+		//  Ambil nilai performance & potential
+		$performance = $answersWithScore[0]['score'];
+		$potential   = $totalScorePotential;
+
+		//  Tentukan kategori
+		if ($performance < 70 && $potential < 16) {
+			$category = "No Hopers";
+		} elseif ($performance < 80 && $potential < 16) {
+			$category = "Foot Soldiers";
+		} elseif ($performance <= 100 && $potential < 16) {
+			$category = "Workhorses";
+		} elseif ($performance < 80 && $potential < 32) {
+			$category = "Critical List";
+		} elseif ($performance < 90 && $potential < 32) {
+			$category = "Cadre";
+		} elseif ($performance <= 100 && $potential < 32) {
+			$category = "Eagles";
+		} elseif ($performance < 80 && $potential <= 40) {
+			$category = "Misfits";
+		} elseif ($performance < 90 && $potential <= 40) {
+			$category = "Prince in waiting";
+		} elseif ($performance <= 100 && $potential <= 40) {
+			$category = "Stars";
+		} else {
+			$category = "Error";
+		}
+
+		//  Deskripsi otomatis
+		$descriptions = [
+			'No Hopers' => 'Pull in the plug',
+			'Foot Soldiers' => 'Monitoring Needed.',
+			'Workhorses' => 'Keeps the show going.',
+			'Critical List' => 'Needs salvaging',
+			'Cadre' => 'The Typical Employee.',
+			'Eagles' => 'Delivers consistently.',
+			'Misfits' => 'Attitudinal or job fit issues.',
+			'Prince in waiting' => 'More time needed.',
+			'Stars' => 'Ready to fly.',
+			'Error' => 'Nilai tidak sesuai rentang yang diharapkan.',
+		];
+		$description = $descriptions[$category];
+		$payload = [
 			'name'        => $employee->name,
 			'nik'         => $employee->nik,
 			'jabatan'     => $employee->jabatan,
 			'divisi'      => $employee->divisi,
-			'answers'     => json_encode($answersWithScore), // simpan dalam JSON
+			'answers'     => json_encode($answersWithScore),
 			'total_score' => $totalScore,
 			'bulan'       => $request->bulan,
 			'tahun'       => now()->year,
-			'sp' 		  => $spLevel
+			'sp' 		  => $spLevel,
+			'performance' => $performance,
+			'potential'   => $potential,
+			'category'	  => $category,
+			'description' => $description,
 		];
-		Question::create($payloads);
+		// Simpan ke DB
+		Question::create($payload);
 
 		return redirect()
 			->route('questions.result')
 			->with('success', "Jawaban berhasil disimpan. Total Nilai (setelah SP): {$totalScore}");
 	}
-
 
 
 	// Helper untuk pertanyaan (biar tidak duplikat)
@@ -325,7 +368,7 @@ class QuestionController extends Controller
 
 		return view('questions.result', compact('results', 'divisions', 'bulans'));
     }
-	public function result(Request $request)
+	public function result4(Request $request)
 	{
 		$divisi = $request->get('divisi');
 		$bulan = strtolower($request->get('bulan'));
@@ -340,7 +383,12 @@ class QuestionController extends Controller
 			'divisi',
 			'bulan',
 			'answers',
-			'total_score'
+			'total_score',
+			'performance',
+			'potential',
+			'category',
+			'description',
+			'tahun'
 		);
 
 		if ($divisi) {
@@ -355,13 +403,15 @@ class QuestionController extends Controller
 
 		if ($tahunMulai && $tahunAkhir) {
 			if ($driver === 'mysql') {
-				$query->whereBetween(DB::raw('YEAR(created_at)'), [$tahunMulai, $tahunAkhir]);
+				$query->whereBetween('tahun', [$tahunMulai, $tahunAkhir]);
+				// $query->whereBetween(DB::raw('YEAR(created_at)'), [$tahunMulai, $tahunAkhir]);
 			} else {
-				$query->whereBetween(DB::raw("EXTRACT(YEAR FROM created_at)"), [$tahunMulai, $tahunAkhir]);
+				$query->whereBetween('tahun', [$tahunMulai, $tahunAkhir]);
+				// $query->whereBetween(DB::raw("EXTRACT(YEAR FROM created_at)"), [$tahunMulai, $tahunAkhir]);
 			}
 		} elseif ($tahunMulai) {
 			if ($driver === 'mysql') {
-				$query->whereYear('created_at', $tahunMulai);
+				$query->where('tahun', $tahunMulai);
 			} else {
 				$query->whereRaw("EXTRACT(YEAR FROM created_at) = ?", [$tahunMulai]);
 			}
@@ -378,13 +428,100 @@ class QuestionController extends Controller
 			if (!$answers) {
 				return null;
 			}
-			// choice pertama → Kualitas & Kuantitas
-			$kualitas = $answers[0]['score'] ?? 0;
+			$total = collect($answers)->sum('score');
+			return [
+				'id' => $item->id,
+				'name' => $item->name,
+				'nik' => $item->nik,
+				'jabatan' => $item->jabatan,
+				'divisi' => $item->divisi,
+				'bulan' => $item->bulan,
+				'kualitas_dan_kuantitas' => $item->performance,
+				'sikap_kerja' => $item->potential,
+				'total_nilai' => $total,
+				'category' => $item->category,
+				'description' => $item->description,
+			];
+		})->filter();
 
-			// sisanya → Sikap Kerja
-			$sikap = collect($answers)->skip(1)->sum('score');
+		$categoryCounts = $results->groupBy('category')->map->count();
+		$allCategories = [
+			'Stars',
+			'Prince of Waiting',
+			'Critical Hit',
+			'Cadre',
+			'Eagles',
+			'Workhorse',
+			'Foot Soldiers',
+			'No Hopers',
+			'Misfit',
+		];
 
-			// total = semua skor
+		$categoryCountsFinal = [];
+
+		foreach ($allCategories as $cat) {
+			$categoryCountsFinal[$cat] = $categoryCounts[$cat] ?? 0;
+		}
+		dd($categoryCountsFinal);
+
+		$divisions = Question::select('divisi')->distinct()->pluck('divisi');
+		$bulans = Question::select('bulan')->distinct()->pluck('bulan');
+
+		return view('questions.result', compact('results', 'divisions', 'bulans', 'categoryCountsFinal'));
+	}
+	public function result(Request $request)
+	{
+		// Ambil filter dari request
+		$divisi = $request->get('divisi');
+		$bulan = strtolower($request->get('bulan'));
+		$tahunMulai = $request->get('tahun_mulai');
+		$tahunAkhir = $request->get('tahun_akhir');
+
+		$queryTable = Question::select(
+			'id',
+			'name',
+			'nik',
+			'jabatan',
+			'divisi',
+			'bulan',
+			'answers',
+			'total_score',
+			'performance',
+			'potential',
+			'category',
+			'description',
+			'tahun'
+		);
+
+		// Filter divisi (opsional)
+		if ($divisi) {
+			$queryTable->where('divisi', $divisi);
+		}
+
+		// Filter bulan (opsional)
+		if ($bulan) {
+			$queryTable->where('bulan', $bulan);
+		}
+
+		// Filter tahun (wajib)
+		if ($tahunMulai && $tahunAkhir) {
+			$queryTable->whereBetween('tahun', [$tahunMulai, $tahunAkhir]);
+		} elseif ($tahunMulai) {
+			$queryTable->where('tahun', $tahunMulai);
+		}
+
+		$recordsTable = $queryTable->get();
+
+		// Olah JSON table → jadi array rapi
+		$resultsTable = $recordsTable->map(function ($item) {
+			$answers = is_string($item->answers)
+				? json_decode($item->answers, true)
+				: $item->answers;
+
+			if (!$answers) {
+				return null;
+			}
+
 			$total = collect($answers)->sum('score');
 
 			return [
@@ -394,17 +531,100 @@ class QuestionController extends Controller
 				'jabatan' => $item->jabatan,
 				'divisi' => $item->divisi,
 				'bulan' => $item->bulan,
-				'kualitas_dan_kuantitas' => $kualitas,
-				'sikap_kerja' => $sikap,
+				'kualitas_dan_kuantitas' => $item->performance,
+				'sikap_kerja' => $item->potential,
 				'total_nilai' => $total,
+				'category' => $item->category,
+				'description' => $item->description,
 			];
 		})->filter();
+
+		$queryMatrix = Question::select(
+			'id',
+			'name',
+			'nik',
+			'jabatan',
+			'divisi',
+			'bulan',
+			'answers',
+			'total_score',
+			'performance',
+			'potential',
+			'category',
+			'description',
+			'tahun'
+		);
+
+		// Filter tahun
+		if ($tahunMulai && $tahunAkhir) {
+			$queryMatrix->whereBetween('tahun', [$tahunMulai, $tahunAkhir]);
+		} elseif ($tahunMulai) {
+			$queryMatrix->where('tahun', $tahunMulai);
+		}
+
+		// Divisi opsional
+		if ($divisi) {
+			$queryMatrix->where('divisi', $divisi);
+		}
+
+		$recordsMatrix = $queryMatrix->get();
+
+		// Olah JSON matrix
+		$resultsMatrix = $recordsMatrix->map(function ($item) {
+			$answers = is_string($item->answers)
+				? json_decode($item->answers, true)
+				: $item->answers;
+
+			if (!$answers) {
+				return null;
+			}
+
+			$total = collect($answers)->sum('score');
+
+			return [
+				'id' => $item->id,
+				'name' => $item->name,
+				'nik' => $item->nik,
+				'jabatan' => $item->jabatan,
+				'divisi' => $item->divisi,
+				'kualitas_dan_kuantitas' => $item->performance,
+				'sikap_kerja' => $item->potential,
+				'total_nilai' => $total,
+				'category' => $item->category,
+				'description' => $item->description,
+			];
+		})->filter();
+
+		$categoryCounts = $resultsMatrix->groupBy('category')->map->count();
+
+		$allCategories = [
+			'Stars',
+			'Prince of Waiting',
+			'Critical Hit',
+			'Cadre',
+			'Eagles',
+			'Workhorse',
+			'Foot Soldiers',
+			'No Hopers',
+			'Misfit',
+		];
+
+		$categoryCountsFinal = [];
+		foreach ($allCategories as $cat) {
+			$categoryCountsFinal[$cat] = $categoryCounts[$cat] ?? 0;
+		}
 
 		$divisions = Question::select('divisi')->distinct()->pluck('divisi');
 		$bulans = Question::select('bulan')->distinct()->pluck('bulan');
 
-		return view('questions.result', compact('results', 'divisions', 'bulans'));
+		return view('questions.result', [
+			'results' => $resultsTable,             // untuk table
+			'categoryCountsFinal' => $categoryCountsFinal, // untuk matrix
+			'divisions' => $divisions,
+			'bulans' => $bulans,
+		]);
 	}
+
 
 	public function downloadPdf(Request $request)
 	{
@@ -517,76 +737,73 @@ class QuestionController extends Controller
 	}
 	public function matrixShow(Request $request, $type)
 	{
-		// Ambil query string dari URL
 		$division = $request->query('division');
 		$year = $request->query('year');
 
-		// Query ke tabel score_kpi
 		$query = Question::query();
 
-		// Filter divisi
+		// Filter divisi & tahun
 		if (!empty($division)) {
 			$query->where('divisi', $division);
 		}
 
-		// Filter tahun
 		if (!empty($year)) {
 			$query->where('tahun', $year);
 		}
 
-		// Tentukan kategori matrix berdasarkan total_score
+		// Tentukan kategori matrix & tampilannya
 		switch ($type) {
-			case 'star':
-				$query->where('total_score', '>=', 85);
-				$matrixTitle = 'Star Performer';
+			case 'stars':
+				$matrixTitle = 'Stars';
+				$query->where('category', 'Stars');
 				$color = '#c6df6e';
 				break;
 
 			case 'prince-of-waiting':
-				$query->whereBetween('total_score', [75, 84]);
 				$matrixTitle = 'Prince in Waiting';
+				$query->where('category', 'Prince in Waiting');
 				$color = '#a6ce6e';
 				break;
 
 			case 'misfit':
-				$query->whereBetween('total_score', [60, 74]);
 				$matrixTitle = 'Misfits';
+				$query->where('category', 'Misfits');
 				$color = '#f5c400';
 				break;
 
 			case 'critical-hit':
-				$query->whereBetween('total_score', [45, 59]);
 				$matrixTitle = 'Critical List';
+				$query->where('category', 'Critical List');
 				$color = '#e64000';
 				break;
 
 			case 'no-hopers':
-				$query->where('total_score', '<', 45);
 				$matrixTitle = 'No Hopers';
+				$query->where('category', 'No Hopers');
 				$color = '#600000';
 				break;
 
 			case 'cadre':
-				$query->whereBetween('total_score', [70, 84]);
 				$matrixTitle = 'Cadre';
+				$query->where('category', 'Cadre');
 				$color = '#ffe100';
 				break;
 
 			case 'eagles':
-				$query->where('total_score', '>=', 85);
 				$matrixTitle = 'Eagles';
+				$query->where('category', 'Eagles');
 				$color = '#3e833e';
 				break;
 
 			case 'workhorse':
-				$query->whereBetween('total_score', [55, 69]);
 				$matrixTitle = 'Workhorse';
+				$query->where('category', 'Workhorse');
 				$color = '#f59200';
 				break;
 
 			case 'foot-soldiers':
-				$query->whereBetween('total_score', [40, 54]);
 				$matrixTitle = 'Foot Soldiers';
+				$query->where('category', 'Foot Soldiers');
 				$color = '#7d0000';
 				break;
 
@@ -596,17 +813,75 @@ class QuestionController extends Controller
 				break;
 		}
 
-		// Ambil hasil dari database
+		// Ambil hasil
 		$questions = $query->orderByDesc('total_score')->get();
 
-		// Kirim data ke view
 		return view('matrix.show', compact(
-			'questions',  // data hasil query
-			'type',       // jenis matrix (misfit, star, dll)
-			'matrixTitle', // judul matrix
-			'color',      // warna tema
-			'division',   // filter divisi
-			'year'        // filter tahun
+			'questions',
+			'type',
+			'matrixTitle',
+			'color',
+			'division',
+			'year'
 		));
+	}
+
+	public function getCategoryName($performance, $potential)
+	{
+		if ($performance < 70 && $potential < 16) return 'No Hopers';
+		if ($performance < 80 && $potential < 16) return 'Foot Soldiers';
+		if ($performance <= 100 && $potential < 16) return 'Workhorses';
+		if ($performance < 80 && $potential < 32) return 'Critical Hit';
+		if ($performance < 90 && $potential < 32) return 'Cadre';
+		if ($performance <= 100 && $potential < 32) return 'Eagles';
+		if ($performance < 80 && $potential <= 40) return 'Misfit';
+		if ($performance < 90 && $potential <= 40) return 'Prince of Waiting';
+		if ($performance <= 100 && $potential <= 40) return 'Stars';
+
+		return 'Error';
+	}
+
+	public function matrixCount(Request $request)
+	{
+		$year = $request->get('year');
+		$division = $request->get('division');
+
+		$query = Question::where('tahun', $year);
+
+		if ($division) {
+			$query->where('divisi', $division);
+		}
+
+		$records = $query->get();
+
+		$results = $records->map(function ($item) {
+			$answers = json_decode($item->answers, true);
+			if (!$answers) return null;
+
+			return [
+				'category' => $item->category
+			];
+		})->filter();
+
+		$categoryCounts = $results->groupBy('category')->map->count();
+
+		$allCategories = [
+			'Stars',
+			'Prince of Waiting',
+			'Critical Hit',
+			'Cadre',
+			'Eagles',
+			'Workhorse',
+			'Foot Soldiers',
+			'No Hopers',
+			'Misfit'
+		];
+
+		$final = [];
+		foreach ($allCategories as $cat) {
+			$final[$cat] = $categoryCounts[$cat] ?? 0;
+		}
+
+		return response()->json($final);
 	}
 }

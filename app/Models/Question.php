@@ -20,7 +20,11 @@ class Question extends Model
         'total_score',
 		'bulan',
 		'tahun',
-		'sp'
+		'sp',
+		'performance',
+		'potential',
+		'category',
+		'description'
     ];
 
     protected $casts = [

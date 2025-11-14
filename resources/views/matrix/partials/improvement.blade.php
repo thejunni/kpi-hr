@@ -1,5 +1,5 @@
 @switch($matrixTitle)
-@case('Star Performer')
+@case('Stars')
 <ol class="mb-0">
 	<li>Dapat dipromosikan</li>
 	<li>Memperluas ruang lingkup kerja dan menyediakan tantangan yang lebih baik</li>

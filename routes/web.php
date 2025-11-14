@@ -28,6 +28,7 @@ Route::prefix('questions')->name('questions.')->group(function () {
 	Route::delete('/delete/{id}', [QuestionController::class, 'destroy'])->name('destroy');
 	Route::get('/questions/category/{slug}', [QuestionController::class, 'category'])->name('category');
 	Route::get('/matrix/{type}', [QuestionController::class, 'matrixShow'])->name('matrix.show');
+	Route::get('/questions/matrix-count', [QuestionController::class, 'matrixCount'])->name('matrix.count');
 });
 Route::resource('users', UserController::class);
 Route::post('/users/import', [UserController::class, 'import'])->name('users.import');

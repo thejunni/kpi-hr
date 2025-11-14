@@ -25,7 +25,6 @@
 							<th>Nilai Sikap Kerja</th>
 							<th>Kategori</th>
 							<th>Keterangan</th>
-							<th style="width: 30%;">Improvement</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -37,32 +36,28 @@
 						@endphp
 						<tr>
 							<td>{{ $q->name ?? '-' }}</td>
-							<td>{{ $q->jabatan ?? '-' }}</td>
-							<td>{{ $nilaiPerformance }}</td>
-							<td>{{ $nilaiSikap }}</td>
-							<td>{{ $matrixTitle ?? '-' }}</td>
-							<td>-</td>
-							<td class="text-start">
-								@include('matrix.partials.improvement', ['matrixTitle' => $matrixTitle])
-							</td>
+							<td>{{ $q->divisi ?? '-' }}</td>
+							<td>{{ $q->performance ?? '-' }}</td>
+							<td>{{ $q->potential ?? '-' }}</td>
+							<td>{{ $q->category ?? '-' }}</td>
+							<td>{{ $q->description ?? '-' }}</td>
 						</tr>
 						@empty
 						<tr>
-							<td colspan="7" class="text-center">Tidak ada data ditemukan untuk filter ini.</td>
-						</tr>
-						<tr>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>-</td>
-							<td>{{ $matrixTitle ?? '-' }}</td>
-							<td>-</td>
-							<td class="text-start">
-								@include('matrix.partials.improvement', ['matrixTitle' => $matrixTitle])
-							</td>
+							<td colspan="6" class="text-center">Tidak ada data ditemukan untuk filter ini.</td>
 						</tr>
 						@endforelse
 					</tbody>
+
+					{{-- Tambahkan baris improvement di bawah tabel --}}
+					<tfoot>
+						<tr>
+							<td colspan="6" class="text-start" style="background-color: #f9f9f9;">
+								<strong>Improvement:</strong><br>
+								@include('matrix.partials.improvement', ['matrixTitle' => $matrixTitle])
+							</td>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>
