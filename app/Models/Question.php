@@ -24,7 +24,8 @@ class Question extends Model
 		'performance',
 		'potential',
 		'category',
-		'description'
+		'description',
+		'semester'
     ];
 
     protected $casts = [

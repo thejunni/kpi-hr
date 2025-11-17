@@ -112,6 +112,7 @@ class QuestionController extends Controller
 			'employee_id' => 'required|exists:employees,id',
 			'answers' => 'required|array',
 			'bulan'   => 'required|string',
+			'semester' => 'required|integer',
 		]);
 
 		$employee = Employee::findOrFail($request->employee_id);
@@ -141,12 +142,10 @@ class QuestionController extends Controller
 			default => 0,
 		};
 
-		$totalScore = max(0, $totalScore - $pengurangan);
 
 		//  Ambil nilai performance & potential
 		$performance = $answersWithScore[0]['score'];
-		$potential   = $totalScorePotential;
-
+		$potential = max(0, $totalScorePotential - $pengurangan);
 		//  Tentukan kategori
 		if ($performance < 70 && $potential < 16) {
 			$category = "No Hopers";
@@ -198,6 +197,7 @@ class QuestionController extends Controller
 			'potential'   => $potential,
 			'category'	  => $category,
 			'description' => $description,
+			'semester'	  => (int)$request->semester,
 		];
 		// Simpan ke DB
 		Question::create($payload);
@@ -490,7 +490,8 @@ class QuestionController extends Controller
 			'potential',
 			'category',
 			'description',
-			'tahun'
+			'tahun',
+			'semester'
 		);
 
 		// Filter divisi (opsional)
@@ -536,6 +537,7 @@ class QuestionController extends Controller
 				'total_nilai' => $total,
 				'category' => $item->category,
 				'description' => $item->description,
+				'semester' => $item->semester
 			];
 		})->filter();
 
@@ -739,10 +741,11 @@ class QuestionController extends Controller
 	{
 		$division = $request->query('division');
 		$year = $request->query('year');
+		$semester = $request->query('semester'); // ← TAMBAHAN
 
 		$query = Question::query();
 
-		// Filter divisi & tahun
+		// Filter divisi, tahun, semester
 		if (!empty($division)) {
 			$query->where('divisi', $division);
 		}
@@ -751,7 +754,11 @@ class QuestionController extends Controller
 			$query->where('tahun', $year);
 		}
 
-		// Tentukan kategori matrix & tampilannya
+		if (!empty($semester)) {
+			$query->where('semester', (int) $semester);
+		}
+
+		// Tentukan kategori matrix
 		switch ($type) {
 			case 'stars':
 				$matrixTitle = 'Stars';
@@ -822,7 +829,8 @@ class QuestionController extends Controller
 			'matrixTitle',
 			'color',
 			'division',
-			'year'
+			'year',
+			'semester'
 		));
 	}
 
@@ -845,11 +853,17 @@ class QuestionController extends Controller
 	{
 		$year = $request->get('year');
 		$division = $request->get('division');
+		$semester = $request->get('semester'); // ← TAMBAHAN
 
 		$query = Question::where('tahun', $year);
 
 		if ($division) {
 			$query->where('divisi', $division);
+		}
+
+		// filter semester bila dipilih
+		if ($semester) {
+			$query->where('semester', (int) $semester);
 		}
 
 		$records = $query->get();
@@ -883,5 +897,84 @@ class QuestionController extends Controller
 		}
 
 		return response()->json($final);
+	}
+
+	public function downloadMatrix(Request $req)
+	{
+		$matrixTitle   		= $req->type;
+		$year    		    = $req->year;
+		$division    		= $req->division;
+		$semester           = $req->semester;
+		// Sesuaikan warna + nama resmi + filter kategori
+		switch ($matrixTitle) {
+			case 'Stars':
+				$matrixTitle = 'Stars';
+				$categoryFilter = 'Stars';
+				$color = '#c6df6e';
+				break;
+
+			case 'Prince of Waiting':
+				$matrixTitle = 'Prince in Waiting';
+				$categoryFilter = 'Prince in Waiting';
+				$color = '#a6ce6e';
+				break;
+
+			case 'Misfit':
+				$matrixTitle = 'Misfits';
+				$categoryFilter = 'Misfits';
+				$color = '#f5c400';
+				break;
+
+			case 'Critical Hit':
+				$matrixTitle = 'Critical List';
+				$categoryFilter = 'Critical List';
+				$color = '#e64000';
+				break;
+
+			case 'No Hopers':
+				$matrixTitle = 'No Hopers';
+				$categoryFilter = 'No Hopers';
+				$color = '#600000';
+				break;
+
+			case 'Cadre':
+				$matrixTitle = 'Cadre';
+				$categoryFilter = 'Cadre';
+				$color = '#ffe100';
+				break;
+
+			case 'Eagles':
+				$matrixTitle = 'Eagles';
+				$categoryFilter = 'Eagles';
+				$color = '#3e833e';
+				break;
+
+			case 'Workhorse':
+				$matrixTitle = 'Workhorse';
+				$categoryFilter = 'Workhorse';
+				$color = '#f59200';
+				break;
+
+			case 'Foot Soldiers':
+				$matrixTitle = 'Foot Soldiers';
+				$categoryFilter = 'Foot Soldiers';
+				$color = '#7d0000';
+				break;
+		}
+
+		// Query data sesuai filter
+		$questions = Question::when($year, fn($q) => $q->where('tahun', $year))
+			->when($division, fn($q) => $q->where('divisi', $division))
+			->when($semester, fn($q) => $q->where('semester', $semester))
+			->when($categoryFilter, fn($q) => $q->where('category', $categoryFilter))
+			->get();
+
+		// Generate PDF
+		$pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+			'matrix.download-pdf',
+			compact('questions', 'matrixTitle', 'year', 'division', 'color')
+		)->setPaper('A4', 'landscape');
+
+		return $pdf->download("Matrix-{$matrixTitle}-{$year}.pdf");
 	}
 }

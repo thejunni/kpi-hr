@@ -26,9 +26,9 @@
 				</div>
 			</div>
 			<div>
-				<small>Bulan</small>
+				<small>Semester</small>
 				<div class="card p-2">
-					<div id="preview-bulan"><strong>Pilih Bulan dahulu</strong></div>
+					<div id="preview-semester"><strong>Pilih Semester dahulu</strong></div>
 				</div>
 			</div>
 		</div>
@@ -81,6 +81,14 @@
 						<option value="oktober">Oktober</option>
 						<option value="november">November</option>
 						<option value="desember">Desember</option>
+					</select>
+				</div>
+				<div class="mb-3">
+					<label for="semester" class="form-label">Semester</label>
+					<select class="form-select" id="semester" name="semester" required>
+						<option value="" disabled selected>--Pilih Semester--</option>
+						<option value=1>Semester 1</option>
+						<option value=2>Semester 2</option>
 					</select>
 				</div>
 			</div>
@@ -211,8 +219,8 @@
 		const jabatanInput = document.getElementById("jabatan");
 		const divisiInput = document.getElementById("divisi");
 		const previewNama = document.getElementById("preview-nama");
-		const bulanSelect = document.getElementById("bulan");
-		const previewBulan = document.getElementById("preview-bulan");
+		const semesterSelect = document.getElementById("semester");
+		const previewSemester = document.getElementById("preview-semester");
 
 		employeeSelect.addEventListener("change", function() {
 			const employeeId = this.value;
@@ -230,9 +238,9 @@
 			}
 		});
 
-		bulanSelect.addEventListener("change", function() {
-			previewBulan.textContent = bulanSelect.options[bulanSelect.selectedIndex].text || "Pilih Bulan";
-			previewBulan.style.fontWeight = "bold";
+		semesterSelect.addEventListener("change", function() {
+			previewSemester.textContent = semesterSelect.options[semesterSelect.selectedIndex].text || "Pilih Semester";
+			previewSemester.style.fontWeight = "bold";
 		});
 	});
 </script>

@@ -169,7 +169,7 @@
 						<th>NIP</th>
 						<th>Jabatan</th>
 						<th>Divisi</th>
-						<th>Bulan</th>
+						<th>Semester</th>
 						<th>Kinerja</th>
 						<th>Sikap Kerja</th>
 						<th>Kategotri</th>
@@ -190,7 +190,7 @@
 						<td>{{ $res['nik'] }}</td>
 						<td>{{ $res['jabatan'] }}</td>
 						<td>{{ $res['divisi'] }}</td>
-						<td>{{ $res['bulan'] ? strtoupper($res['bulan']) : "-" }}</td>
+						<td>Semester {{ $res['semester'] }}</td>
 						<td>
 							<span class="badge bg-primary px-3 py-2">
 								{{ $res['kualitas_dan_kuantitas'] }}
@@ -311,10 +311,9 @@
 							<option value="Marketing Kredit Komersil Cabang Semarapura" {{ request('divisi') == 'Marketing Kredit Komersil Cabang Semarapura' ? 'selected' : '' }}>Marketing Kredit Komersil Cabang Semarapura</option>
 						</select>
 					</div>
-
-					<div class="col-md-3">
-						<label for="year_kpi" class="form-label fw-bold">Pilih Tahun</label>
-						<select name="year_kpi2" id="year_kpi" class="form-select select2">
+					<div class="col-md-4">
+						<label for="year" class="form-label fw-bold">Pilih Tahun</label>
+						<select name="year_kpi2" id="year" class="form-select select2">
 							<option value="">-- Tahun --</option>
 							@for ($y = date('Y'); $y >= 2000; $y--)
 							<option value="{{ $y }}" {{ request('tahun_mulai') == $y ? 'selected' : '' }}>
@@ -323,85 +322,133 @@
 							@endfor
 						</select>
 					</div>
+					<div class="col-md-4">
+						<label for="Semester" class="form-label fw-bold">Pilih Semester</label>
+						<select name="semester" id="semester" class="form-select select2">
+							<option value="">-- Semua Semester --</option>
+							<option value=1 {{ request('semester') == 1 ? 'selected' : '' }}>Semester 1</option>
+							<option value=2 {{ request('semester') == 2 ? 'selected' : '' }}>Semester 2</option>
+						</select>
+					</div>
 				</div>
-
-
 				<!-- Grid Kotak -->
 				<div id="matrix-grid" class="row g-3 text-center" style="display:none;">
+
 					<!-- Baris 1 -->
 					<div class="col-md-4">
-						<a href="#" data-path="misfit" class="matrix-link d-block text-decoration-none text-dark">
+						<a href="#" data-path="misfit" data-category="Misfit" class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #f5c400;">
 								<h4>5. Misfit</h4>
-								<div>({{ $categoryCountsFinal['Misfit'] }} Karyawan)</div>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['Misfit'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
+
 					<div class="col-md-4">
-						<a href="#" data-path="prince-of-waiting" class="matrix-link d-block text-decoration-none text-dark">
+						<a href="#" data-path="prince-of-waiting" data-category="Prince of Waiting"
+							class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #a6ce6e;">
-								<h4>2. Prince of waiting</h4>
-								<div>({{ $categoryCountsFinal['Prince of Waiting'] }} Karyawan)</div>
+								<h4>2. Prince of Waiting</h4>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['Prince of Waiting'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
+
 					<div class="col-md-4">
-						<a href="#" data-path="stars" class="matrix-link d-block text-decoration-none text-dark">
+						<a href="#" data-path="stars" data-category="Stars"
+							class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #c6df6e;">
-								<h4>1. Star</h4>
-								<div>({{ $categoryCountsFinal['Stars'] }} Karyawan)</div>
+								<h4>1. Stars</h4>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['Stars'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
 
 					<!-- Baris 2 -->
 					<div class="col-md-4">
-						<a href="#" data-path="critical-hit" class="matrix-link d-block text-decoration-none text-dark">
+						<a href="#" data-path="critical-hit" data-category="Critical Hit"
+							class="matrix-link d-block text-decoration-none text-light">
 							<div class="p-5 rounded-3" style="background-color: #e64000;">
 								<h4>7. Critical Hit</h4>
-								<div>({{ $categoryCountsFinal['Critical Hit'] }} Karyawan)</div>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['Critical Hit'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-light d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
+
 					<div class="col-md-4">
-						<a href="#" data-path="cadre" class="matrix-link d-block text-decoration-none text-dark">
+						<a href="#" data-path="cadre" data-category="Cadre"
+							class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #ffe100;">
 								<h4>4. Cadre</h4>
-								<div>({{ $categoryCountsFinal['Cadre'] }} Karyawan)</div>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['Cadre'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
+
 					<div class="col-md-4">
-						<a href="#" data-path="eagles" class="matrix-link d-block text-decoration-none text-dark">
+						<a href="#" data-path="eagles" data-category="Eagles"
+							class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #3e833e;">
 								<h4>3. Eagles</h4>
-								<div>({{ $categoryCountsFinal['Eagles'] }} Karyawan)</div>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['Eagles'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
 
 					<!-- Baris 3 -->
 					<div class="col-md-4">
-						<a href="#" data-path="no-hopers" class="matrix-link d-block text-decoration-none text-light">
+						<a href="#" data-path="no-hopers" data-category="No Hopers"
+							class="matrix-link d-block text-decoration-none text-light">
 							<div class="p-5 rounded-3" style="background-color: #600000;">
 								<h4>9. No Hopers</h4>
-								<div>({{ $categoryCountsFinal['No Hopers'] }} Karyawan)</div>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['No Hopers'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-light d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
+
 					<div class="col-md-4">
-						<a href="#" data-path="foot-soldiers" class="matrix-link d-block text-decoration-none text-light">
+						<a href="#" data-path="foot-soldiers" data-category="Foot Soldiers"
+							class="matrix-link d-block text-decoration-none text-light">
 							<div class="p-5 rounded-3" style="background-color: #7d0000;">
 								<h4>8. Foot Soldiers</h4>
-								<div>({{ $categoryCountsFinal['Foot Soldiers'] }} Karyawan)</div>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['Foot Soldiers'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-light d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
+
 					<div class="col-md-4">
-						<a href="#" data-path="workhorse" class="matrix-link d-block text-decoration-none text-dark">
+						<a href="#" data-path="workhorse" data-category="Workhorse"
+							class="matrix-link d-block text-decoration-none text-dark">
 							<div class="p-5 rounded-3" style="background-color: #f59200;">
 								<h4>6. Workhorse</h4>
-								<div>({{ $categoryCountsFinal['Workhorse'] }} Karyawan)</div>
+								<div class="employee-count">
+									<span class="count-value">({{ $categoryCountsFinal['Workhorse'] }} Karyawan)</span>
+									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
+								</div>
 							</div>
 						</a>
 					</div>
@@ -457,9 +504,14 @@
 		allowClear: true,
 		width: '100%'
 	});
-	// $('.select2["year_kpi"]').select2({
-	$('#year_kpi').select2({
+	// $('.select2["year"]').select2({
+	$('#year').select2({
 		placeholder: "-- Pilih Tahun --",
+		allowClear: true,
+		width: '100%'
+	});
+	$('#semester').select2({
+		placeholder: "-- Pilih Semester --",
 		allowClear: true,
 		width: '100%'
 	});
@@ -595,66 +647,130 @@
 </script>
 <script>
 	document.addEventListener('DOMContentLoaded', function() {
-
 		const matrixGrid = document.getElementById('matrix-grid');
+		const semesterSelector = '#semester';
+
+		// fallback: pakai #year_kpi kalau ada, kalau tidak pakai #year
+		function getYearSelector() {
+			return $('#year_kpi').length ? '#year_kpi' : '#year';
+		}
 
 		function toggleMatrixGrid() {
-			const yearVal = $('#year_kpi').val();
+			const yearVal = $(getYearSelector()).val();
 			matrixGrid.style.display = yearVal ? 'flex' : 'none';
 		}
 
-		$('#year_kpi').on('change', function() {
-			toggleMatrixGrid();
-			fetchMatrixCounts(); // <-- update matrix
-		});
+		// ----- Spinner safe helpers -----
+		function showMatrixLoading() {
+			document.querySelectorAll('.matrix-link .employee-count').forEach(ec => {
+				// ec harus ada; cari elemen khusus di dalamnya
+				const countEl = ec.querySelector('.count-value');
+				const spinner = ec.querySelector('.loading-spinner');
 
-		$('#division').on('change', function() {
-			toggleMatrixGrid();
-			fetchMatrixCounts(); // <-- update matrix
-		});
+				if (countEl) countEl.classList.add('d-none');
+				if (spinner) spinner.classList.remove('d-none');
+			});
+		}
 
-		toggleMatrixGrid();
+		function hideMatrixLoading() {
+			document.querySelectorAll('.matrix-link .employee-count').forEach(ec => {
+				const countEl = ec.querySelector('.count-value');
+				const spinner = ec.querySelector('.loading-spinner');
 
+				if (spinner) spinner.classList.add('d-none');
+				if (countEl) countEl.classList.remove('d-none');
+			});
+		}
+
+		// ----- Update counts in DOM -----
+		function updateCategoryCountsFromObject(countsObj) {
+			document.querySelectorAll('.matrix-link').forEach(box => {
+				const cat = box.dataset.category;
+				const total = countsObj[cat] ?? 0;
+
+				// cari elemen penampung jumlah karyawan
+				const counterWrapper = box.querySelector('.employee-count');
+				if (!counterWrapper) return;
+
+				const countSpan = counterWrapper.querySelector('.count-value');
+				if (countSpan) {
+					countSpan.textContent = `(${total} Karyawan)`;
+				} else {
+					// jika count-value belum ada, buat baru sebelum spinner
+					const span = document.createElement('span');
+					span.className = 'count-value';
+					span.textContent = `(${total} Karyawan)`;
+					// sisipkan sebelum spinner kalau ada
+					const spinner = counterWrapper.querySelector('.loading-spinner');
+					if (spinner) counterWrapper.insertBefore(span, spinner);
+					else counterWrapper.appendChild(span);
+				}
+			});
+		}
+
+		// ----- Fetch counts via AJAX -----
 		function fetchMatrixCounts() {
-			const year = $('#year_kpi').val();
+			const year = $(getYearSelector()).val();
 			const division = $('#division').val();
+			const semester = $(semesterSelector).val();
 
-			if (!year) return; // kalau tahun belum dipilih, tidak fetch
+			if (!year) {
+				// hide grid jika tidak ada tahun
+				toggleMatrixGrid();
+				return;
+			}
+
+			showMatrixLoading();
 
 			$.ajax({
 				url: '/questions/matrix-count',
 				type: 'GET',
 				data: {
 					year: year,
-					division: division
+					division: division,
+					semester: semester
 				},
 				success: function(response) {
-					window.categoryCounts = response; // simpan global
-					updateCategoryCounts();
+					window.categoryCounts = response || {};
+					updateCategoryCountsFromObject(window.categoryCounts);
+				},
+				error: function(xhr, status, err) {
+					console.error('fetchMatrixCounts error', status, err);
+				},
+				complete: function() {
+					hideMatrixLoading();
 				}
 			});
 		}
 
-		function updateCategoryCounts() {
-			document.querySelectorAll('.matrix-link').forEach(box => {
-				const cat = box.dataset.category;
-				const total = window.categoryCounts[cat] ?? 0;
+		// event binding
+		$(getYearSelector()).on('change', function() {
+			toggleMatrixGrid();
+			fetchMatrixCounts();
+		});
+		$('#semester').on('change', function() {
+			toggleMatrixGrid();
+			fetchMatrixCounts();
+		});
+		$('#division').on('change', function() {
+			// tetap tampilkan grid bila tahun sudah ada
+			toggleMatrixGrid();
+			fetchMatrixCounts();
+		});
 
-				const counter = box.querySelector('.employee-count');
-				if (counter) {
-					counter.textContent = `(${total} Karyawan)`;
-				}
-			});
-		}
+		// inisialisasi
+		toggleMatrixGrid();
+		// jalankan sekali saat load jika tahun sudah dipilih
+		fetchMatrixCounts();
 
-
-		// --- Klik Matrix Box ---
+		// klik matrix -> redirect
 		document.querySelectorAll('.matrix-link').forEach(link => {
 			link.addEventListener('click', function(e) {
 				e.preventDefault();
 
-				const year = $('#year_kpi').val();
+				const year = $(getYearSelector()).val();
 				const division = $('#division').val();
+				const semester = $(semesterSelector).val();
 				const path = this.dataset.path;
 
 				if (!year) {
@@ -662,9 +778,7 @@
 					return;
 				}
 
-				const targetUrl =
-					`/questions/matrix/${path}?year=${year}&division=${encodeURIComponent(division || "")}`;
-
+				const targetUrl = `/questions/matrix/${path}?year=${year}&division=${encodeURIComponent(division || "")}&semester=${semester}`;
 				window.location.href = targetUrl;
 			});
 		});
