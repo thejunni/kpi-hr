@@ -228,7 +228,7 @@
 					</tr>
 					@empty
 					<tr>
-						<td colspan="7" class="text-center text-muted">
+						<td colspan="12" class="text-center text-muted">
 							Belum ada hasil penilaian.
 						</td>
 					</tr>
