@@ -22,14 +22,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('questions')->name('questions.')->group(function () {
     Route::get('/', [QuestionController::class, 'showQuestion'])->name('index');
-    Route::get('/result', [QuestionController::class, 'result'])->name('result');
-    Route::post('/answer', [QuestionController::class, 'answer'])->name('answer');
+    // Route::get('/result', [QuestionController::class, 'result'])->name('result');
+    Route::post('/answer', [QuestionController::class, 'answerNew'])->name('answer');
     Route::get('/result/download', [QuestionController::class, 'downloadPdf'])->name('downloadPdf');
 	Route::delete('/delete/{id}', [QuestionController::class, 'destroy'])->name('destroy');
 	Route::get('/questions/category/{slug}', [QuestionController::class, 'category'])->name('category');
-	Route::get('/matrix/download', [QuestionController::class, 'downloadMatrix'])->name('matrix-download');
-	Route::get('/matrix/{type}', [QuestionController::class, 'matrixShow'])->name('matrix.show');
-	Route::get('/matrix-count', [QuestionController::class, 'matrixCount'])->name('matrix.count');
+	// Route::get('/matrix/download', [QuestionController::class, 'downloadMatrix'])->name('matrix-download');
+	// Route::get('/matrix/{type}', [QuestionController::class, 'matrixShow'])->name('matrix.show');
+	// Route::get('/matrix-count', [QuestionController::class, 'matrixCount'])->name('matrix.count');
+
+
+	//NEW FORMULA
+	Route::get('/result', [QuestionController::class, 'resultNewFormula'])->name('result-new-formula');
+	Route::get('/matrix/download', [QuestionController::class, 'downloadMatrixNewFormula'])->name('matrix-download-new-formula');
+	Route::get('/matrix/{type}', [QuestionController::class, 'matrixShowNewFormula'])->name('matrix.show-new-formula');
+	Route::get('/new-matrix-count', [QuestionController::class, 'matrixCountNewFormula'])->name('matrix.count-new-formula');
 });
 Route::resource('users', UserController::class);
 Route::post('/users/import', [UserController::class, 'import'])->name('users.import');

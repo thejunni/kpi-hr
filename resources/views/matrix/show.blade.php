@@ -10,11 +10,11 @@
 				@if($year) - Tahun {{ $year }} @endif
 				@if($division) | Divisi: {{ $division }} @endif
 			</h5>
-			<a href="{{ url()->previous() }}" class="btn btn-light btn-sm">← Kembali</a>
+			<a href="{{ route('questions.result-new-formula') }}" class="btn btn-light btn-sm">← Kembali</a>
 		</div>
 
 		<div class="p-3">
-			<a href="{{ route('questions.matrix-download', ['type' => $matrixTitle, 'year' => $year, 'division' => $division]) }}"
+			<a href="{{ route('questions.matrix-download-new-formula', ['type' => $matrixTitle, 'year' => $year, 'division' => $division, 'semester' => $semester]) }}"
 				class="btn btn-warning btn-sm mb-3">⬇ Download PDF</a>
 
 			<div class="card-body p-0">

@@ -14,13 +14,13 @@
 		</div>
 	</div>
 
-	{{-- Filter --}}
+	<!-- {{-- Filter --}}
 	<div class="card shadow-sm border-0 mb-4">
 		<div class="card-body">
 			<h5 class="card-title mb-3">
 				<i class="fa fa-filter text-primary"></i> Filter Data
 			</h5>
-			<form method="GET" action="{{ route('questions.result') }}" class="row g-3">
+			<form method="GET" action="{{ route('questions.result-new-formula') }}" class="row g-3">
 				{{-- Divisi --}}
 				<div class="col-md-3">
 						<select id="division" class="form-select select2" name="division">
@@ -96,7 +96,7 @@
 	if (request('tahun_mulai')) $filterInfo[] = request('tahun_mulai');
 	if (request('tahun_akhir')) $filterInfo[] = request('tahun_akhir');
 	if (request('bulan')) $filterInfo[] = ucfirst(request('bulan'));
-	@endphp
+	@endphp -->
 
 	@if(count($filterInfo) > 0)
 	<div class="fw-bold mb-3">
@@ -240,11 +240,11 @@
 
 					<!-- Baris 1 -->
 					<div class="col-md-4">
-						<a href="#" data-path="misfit" data-category="Misfit" class="matrix-link d-block text-decoration-none text-dark">
-							<div class="p-5 rounded-3" style="background-color: #f5c400;">
-								<h4>5. Misfit</h4>
+						<a href="#" data-path="Best" data-category="Best" class="matrix-link d-block text-decoration-none text-dark">
+							<div class="p-5 rounded-3" style="background-color: #4caf50; ">
+								<h4>1. Best</h4>
 								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['Misfit'] }} Karyawan)</span>
+									<span class="count-value">({{ $categoryCountsFinal['Best'] }} Karyawan)</span>
 									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
 								</div>
 							</div>
@@ -252,12 +252,12 @@
 					</div>
 
 					<div class="col-md-4">
-						<a href="#" data-path="prince-of-waiting" data-category="Prince of Waiting"
+						<a href="#" data-path="Average" data-category="Average"
 							class="matrix-link d-block text-decoration-none text-dark">
-							<div class="p-5 rounded-3" style="background-color: #a6ce6e;">
-								<h4>2. Prince of Waiting</h4>
+							<div class="p-5 rounded-3" style="background-color: #ff9800;">
+								<h4>2. Average</h4>
 								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['Prince of Waiting'] }} Karyawan)</span>
+									<span class="count-value">({{ $categoryCountsFinal['Average'] }} Karyawan)</span>
 									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
 								</div>
 							</div>
@@ -265,92 +265,12 @@
 					</div>
 
 					<div class="col-md-4">
-						<a href="#" data-path="stars" data-category="Stars"
+						<a href="#" data-path="Worst" data-category="Worst"
 							class="matrix-link d-block text-decoration-none text-dark">
-							<div class="p-5 rounded-3" style="background-color: #c6df6e;">
-								<h4>1. Stars</h4>
+							<div class="p-5 rounded-3" style="background-color: #f44336;">
+								<h4>3. Worst / Failed</h4>
 								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['Stars'] }} Karyawan)</span>
-									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
-								</div>
-							</div>
-						</a>
-					</div>
-
-					<!-- Baris 2 -->
-					<div class="col-md-4">
-						<a href="#" data-path="critical-hit" data-category="Critical Hit"
-							class="matrix-link d-block text-decoration-none text-light">
-							<div class="p-5 rounded-3" style="background-color: #e64000;">
-								<h4>7. Critical Hit</h4>
-								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['Critical Hit'] }} Karyawan)</span>
-									<span class="spinner-border spinner-border-sm text-light d-none loading-spinner" role="status"></span>
-								</div>
-							</div>
-						</a>
-					</div>
-
-					<div class="col-md-4">
-						<a href="#" data-path="cadre" data-category="Cadre"
-							class="matrix-link d-block text-decoration-none text-dark">
-							<div class="p-5 rounded-3" style="background-color: #ffe100;">
-								<h4>4. Cadre</h4>
-								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['Cadre'] }} Karyawan)</span>
-									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
-								</div>
-							</div>
-						</a>
-					</div>
-
-					<div class="col-md-4">
-						<a href="#" data-path="eagles" data-category="Eagles"
-							class="matrix-link d-block text-decoration-none text-dark">
-							<div class="p-5 rounded-3" style="background-color: #3e833e;">
-								<h4>3. Eagles</h4>
-								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['Eagles'] }} Karyawan)</span>
-									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
-								</div>
-							</div>
-						</a>
-					</div>
-
-					<!-- Baris 3 -->
-					<div class="col-md-4">
-						<a href="#" data-path="no-hopers" data-category="No Hopers"
-							class="matrix-link d-block text-decoration-none text-light">
-							<div class="p-5 rounded-3" style="background-color: #600000;">
-								<h4>9. No Hopers</h4>
-								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['No Hopers'] }} Karyawan)</span>
-									<span class="spinner-border spinner-border-sm text-light d-none loading-spinner" role="status"></span>
-								</div>
-							</div>
-						</a>
-					</div>
-
-					<div class="col-md-4">
-						<a href="#" data-path="foot-soldiers" data-category="Foot Soldiers"
-							class="matrix-link d-block text-decoration-none text-light">
-							<div class="p-5 rounded-3" style="background-color: #7d0000;">
-								<h4>8. Foot Soldiers</h4>
-								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['Foot Soldiers'] }} Karyawan)</span>
-									<span class="spinner-border spinner-border-sm text-light d-none loading-spinner" role="status"></span>
-								</div>
-							</div>
-						</a>
-					</div>
-
-					<div class="col-md-4">
-						<a href="#" data-path="workhorse" data-category="Workhorse"
-							class="matrix-link d-block text-decoration-none text-dark">
-							<div class="p-5 rounded-3" style="background-color: #f59200;">
-								<h4>6. Workhorse</h4>
-								<div class="employee-count">
-									<span class="count-value">({{ $categoryCountsFinal['Workhorse'] }} Karyawan)</span>
+									<span class="count-value">({{ $categoryCountsFinal['Worst'] }} Karyawan)</span>
 									<span class="spinner-border spinner-border-sm text-dark d-none loading-spinner" role="status"></span>
 								</div>
 							</div>
@@ -442,7 +362,7 @@
 
 	// ✅ Pagination sederhana
 	$(document).ready(function() {
-		let rowsPerPage = 7;
+		let rowsPerPage = 5;
 		let rows = $('#resultTable tbody tr');
 		let rowsCount = rows.length;
 		let pageCount = Math.ceil(rowsCount / rowsPerPage);
@@ -620,7 +540,7 @@
 		// ----- Fetch counts via AJAX -----
 		function fetchMatrixCounts() {
 			const year = $(getYearSelector()).val();
-			const division = $('#division').val();
+			const division = $('#division_matrix').val();
 			const semester = $(semesterSelector).val();
 
 			if (!year) {
@@ -632,7 +552,7 @@
 			showMatrixLoading();
 
 			$.ajax({
-				url: '/questions/matrix-count',
+				url: '/questions/new-matrix-count',
 				type: 'GET',
 				data: {
 					year: year,
@@ -661,7 +581,7 @@
 			toggleMatrixGrid();
 			fetchMatrixCounts();
 		});
-		$('#division').on('change', function() {
+		$('#division_matrix').on('change', function() {
 			// tetap tampilkan grid bila tahun sudah ada
 			toggleMatrixGrid();
 			fetchMatrixCounts();
@@ -678,9 +598,10 @@
 				e.preventDefault();
 
 				const year = $(getYearSelector()).val();
-				const division = $('#division').val();
+				const division = $('#division_matrix').val();
 				const semester = $(semesterSelector).val();
 				const path = this.dataset.path;
+				console.log(path, "ini path")
 
 				if (!year) {
 					alert("Silakan pilih Tahun terlebih dahulu!");

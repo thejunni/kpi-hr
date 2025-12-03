@@ -20,11 +20,9 @@ class QuestionController extends Controller
                 'sub_aspek' => 'Kualitas Dan Kuantitas Hasil Kerja',
                 'pertanyaan' => 'Kualitas dan kuantitas hasil kerja sesuai standar?',
                 'options' => [
-					'A' => ['text' => 'Kualitas/Kuantitas selalu diatas standard / target.', 'score' => 100],
-					'B' => ['text' => 'Kualitas/Kuantitas pada umumnya melebihi standar/target', 'score' => 90],
-					'C' => ['text' => 'Kualitas/Kuantitas mencapai standar/target', 'score' => 80],
-					'D' => ['text' => 'Kualitas/Kuantitas dibawah standar/target', 'score' => 70],
-					'E' => ['text' => 'Kualitas/Kuantitas jauh dibawah standar/target', 'score' => 60],
+					'A' => ['text' => 'Target Terpenuhi', 'score' => 100],
+					'B' => ['text' => 'Target Hampir Terpenuhi', 'score' => 90],
+					'C' => ['text' => 'Target Tidak Terpenuhi', 'score' => 79],
                 ]
             ],
             [
@@ -207,6 +205,94 @@ class QuestionController extends Controller
 			->with('success', "Jawaban berhasil disimpan. Total Nilai (setelah SP): {$totalScore}");
 	}
 
+	public function answerNew(Request $request)
+	{
+	    $request->validate([
+	        'employee_id' => 'required|exists:employees,id',
+	        'answers' => 'required|array',
+	        'bulan'   => 'required|string',
+	        'semester' => 'required|integer',
+	    ]);
+
+	    $employee = Employee::findOrFail($request->employee_id);
+	    $questions = $this->getQuestions();
+
+	    $totalScore = 0;
+	    $answersWithScore = [];
+
+	    foreach ($request->answers as $qIndex => $choice) {
+	        $score = $questions[$qIndex]['options'][$choice]['score'] ?? 0;
+
+	        $answersWithScore[$qIndex] = [
+	            'choice' => $choice,
+	            'text'   => $questions[$qIndex]['options'][$choice]['text'],
+	            'score'  => $score,
+	        ];
+
+	        $totalScore += $score;
+	    }
+
+	    // Potential = total semua kecuali soal ke-0 (performance)
+	    $totalScorePotential = array_sum(array_column(array_slice($answersWithScore, 1), 'score'));
+
+	    // SP logic
+	    $spLevel = $request->input('sp_level', 0);
+	    $pengurangan = match ($spLevel) {
+	        1 => 10,
+	        2 => 20,
+	        3 => 30,
+	        default => 0,
+	    };
+
+	    // Ambil performance & potential raw
+	    $performanceRaw = $answersWithScore[0]['score'];
+	    $potentialRaw   = max(0, $totalScorePotential - $pengurangan);
+
+	    $performance_weight = ($performanceRaw / 100) * 0.70;
+	    $potential_weight   = ($potentialRaw / 40) * 0.30;
+
+	    $totalMatrix = ($performance_weight + $potential_weight) * 100;
+
+	    if ($totalMatrix == 100) {
+	        $category = "Best";
+	    } elseif ($totalMatrix >= 80) {
+	        $category = "Average";
+	    } else {
+	        $category = "Worst";
+	    }
+
+	    $descriptions = [
+	        'Best'          => 'Performer terbaik. Konsisten dan siap naik level.',
+	        'Average'       => 'Performa cukup, masih bisa ditingkatkan.',
+	        'Worst'=> 'Perlu evaluasi mendalam. Hasil di bawah standar.',
+	    ];
+
+	    $description = $descriptions[$category];
+
+	    // Payload untuk DB
+	    $payload = [
+	        'name'        => $employee->name,
+	        'nik'         => $employee->nik,
+	        'jabatan'     => $employee->jabatan,
+	        'divisi'      => $employee->divisi,
+	        'answers'     => json_encode($answersWithScore),
+	        'total_score' => $totalScore,
+	        'bulan'       => $request->bulan,
+	        'tahun'       => now()->year,
+	        'sp' 		  => $spLevel,
+	        'performance' => $performanceRaw,
+	        'potential'   => $potentialRaw,
+	        'category'	  => $category,
+	        'description' => $description,
+	        'semester'	  => (int)$request->semester,
+	    ];
+
+	    Question::create($payload);
+
+	    return redirect()
+	        ->route('questions.result-new-formula')
+	        ->with('success', "Jawaban berhasil disimpan. Total Matrix Score: {$totalMatrix}");
+	}
 
 	// Helper untuk pertanyaan (biar tidak duplikat)
 	private function getQuestions()
@@ -217,11 +303,9 @@ class QuestionController extends Controller
                 'sub_aspek' => 'Kualitas Dan Kuantitas Hasil Kerja',
                 'pertanyaan' => 'Kualitas dan kuantitas hasil kerja sesuai standar?',
                 'options' => [
-					'A' => ['text' => 'Kualitas/Kuantitas selalu diatas standard / target.', 'score' => 100],
-					'B' => ['text' => 'Kualitas/Kuantitas pada umumnya melebihi standar/target', 'score' => 90],
-					'C' => ['text' => 'Kualitas/Kuantitas mencapai standar/target', 'score' => 80],
-					'D' => ['text' => 'Kualitas/Kuantitas dibawah standar/target', 'score' => 70],
-					'E' => ['text' => 'Kualitas/Kuantitas jauh dibawah standar/target', 'score' => 60],
+					'A' => ['text' => 'Target Terpenuhi', 'score' => 100],
+					'B' => ['text' => 'Target Hampir Terpenuhi', 'score' => 90],
+					'C' => ['text' => 'Target Tidak Terpenuhi', 'score' => 79],
                 ]
             ],
             [
@@ -462,7 +546,6 @@ class QuestionController extends Controller
 		foreach ($allCategories as $cat) {
 			$categoryCountsFinal[$cat] = $categoryCounts[$cat] ?? 0;
 		}
-		dd($categoryCountsFinal);
 
 		$divisions = Question::select('divisi')->distinct()->pluck('divisi');
 		$bulans = Question::select('bulan')->distinct()->pluck('bulan');
@@ -477,6 +560,7 @@ class QuestionController extends Controller
 		$tahunMulai = $request->get('tahun_mulai');
 		$tahunAkhir = $request->get('tahun_akhir');
 
+		$divisionsList = self::divisi();
 		$queryTable = Question::select(
 			'id',
 			'name',
@@ -623,6 +707,7 @@ class QuestionController extends Controller
 			'results' => $resultsTable,             // untuk table
 			'categoryCountsFinal' => $categoryCountsFinal, // untuk matrix
 			'divisions' => $divisions,
+			'divisions_list'=> $divisionsList,
 			'bulans' => $bulans,
 		]);
 	}
@@ -712,11 +797,11 @@ class QuestionController extends Controller
 			$question->delete();
 
 			return redirect()
-				->route('questions.result')
+				->route('questions.result-new-formula')
 				->with('success', 'Data berhasil dihapus.');
 		} catch (\Exception $e) {
 			return redirect()
-				->route('questions.result')
+				->route('questions.result-new-formula')
 				->with('error', 'Gagal menghapus data: ' . $e->getMessage());
 		}
 	}
@@ -976,5 +1061,331 @@ class QuestionController extends Controller
 		)->setPaper('A4', 'landscape');
 
 		return $pdf->download("Matrix-{$matrixTitle}-{$year}.pdf");
+	}
+
+	public static function divisi()
+	{
+	    return Employee::selectRaw("DISTINCT REPLACE(TRIM(divisi), '  ', ' ') AS divisi")
+	        ->whereNotNull('divisi')
+	        ->where('divisi', '!=', '')
+	        ->orderBy('divisi', 'asc')
+	        ->pluck('divisi')
+	        ->toArray();
+	}
+
+	public function categoryNewFormula($slug)
+	{
+	    $categories = [
+	        'best' => 'Best',
+	        'average' => 'Average',
+	        'worst' => 'Worst'
+	    ];
+
+	    $title = $categories[$slug] ?? 'Unknown Category';
+	    return view('questions.category', compact('title', 'slug'));
+	}
+
+	public function matrixShowNewFormula(Request $request, $type)
+	{
+	    $division = $request->query('division');
+	    $year = $request->query('year');
+	    $semester = $request->query('semester');
+		
+	    $query = Question::query();
+		
+		if (!empty($division)) {
+			$query->where('divisi', $division);
+		}
+
+		if (!empty($year)) {
+			$query->where('tahun', $year);
+		}
+
+		if (!empty($semester)) {
+			$query->where('semester', (int) $semester);
+		}
+	    // if ($division) $query->where('divisi', $division);
+	    // if ($year) $query->where('tahun', $year);
+	    // if ($semester) $query->where('semester', (int) $semester);
+		
+	    switch ($type) {
+	        case 'Best':
+	            $matrixTitle = 'Best';
+	            $query->where('category', 'Best');
+	            $color = '#4caf50';
+	            break;
+
+	        case 'Average':
+	            $matrixTitle = 'Average';
+	            $query->where('category', 'Average');
+	            $color = '#ff9800';
+	            break;
+
+	        case 'Worst':
+	            $matrixTitle = 'Worst';
+	            $query->where('category', 'Worst');
+	            $color = '#f44336';
+	            break;
+
+	        default:
+	            $matrixTitle = 'Matrix Result';
+	            $color = '#999';
+	    }
+
+	    $questions = $query->orderByDesc('performance')->get();
+		// dd($questions, $type, $matrixTitle, $color, $division, $year, $semester);
+	    return view('matrix.show', compact(
+	        'questions',
+	        'type',
+	        'matrixTitle',
+	        'color',
+	        'division',
+	        'year',
+	        'semester'
+	    ));
+	}
+	public function getCategoryNameNewFormula($performance, $potential)
+	{
+	    // hitung ulang totalMatrix
+	    $performance_weight = ($performance / 100) * 0.70;
+	    $potential_weight   = ($potential / 40) * 0.30;
+
+	    $totalMatrix = ($performance_weight + $potential_weight) * 100;
+
+	    if ($totalMatrix >= 80) {
+	        return 'Best';
+	    }
+
+	    if ($totalMatrix >= 60) {
+	        return 'Average';
+	    }
+
+	    return 'Worst';
+	}
+
+	public function matrixCountNewFormula(Request $request)
+	{
+	    $year = $request->get('year');
+	    $division = $request->get('division');
+	    $semester = $request->get('semester');
+
+	    $query = Question::where('tahun', $year);
+
+	    if ($division) $query->where('divisi', $division);
+	    if ($semester) $query->where('semester', (int) $semester);
+
+	    $records = $query->get();
+
+	    $results = $records->map(function ($item) {
+	        return ['category' => $item->category];
+	    })->filter();
+
+	    $categoryCounts = $results->groupBy('category')->map->count();
+
+	    $final = [
+	        'Best' => $categoryCounts['Best'] ?? 0,
+	        'Average' => $categoryCounts['Average'] ?? 0,
+	        'Worst' => $categoryCounts['Worst'] ?? 0
+	    ];
+	    return response()->json($final);
+	}
+	public function downloadMatrixNewFormula(Request $req)
+	{
+	    $matrixTitle = $req->type;
+	    $year = $req->year;
+	    $division = $req->division;
+	    $semester = $req->semester; 
+	    switch ($matrixTitle) {
+	        case 'Best':
+	            $categoryFilter = 'Best';
+	            $color = '#4caf50';
+	            break;
+
+	        case 'Average':
+	            $categoryFilter = 'Average';
+	            $color = '#ff9800';
+	            break;
+
+	        case 'Worst':
+	            $categoryFilter = 'Worst';
+	            $color = '#f44336';
+	            break;
+
+	        default:
+	            $categoryFilter = null;
+	            $color = '#999';
+	    }
+
+	    $questions = Question::when($year, fn($q) => $q->where('tahun', $year))
+	        ->when($division, fn($q) => $q->where('divisi', $division))
+	        ->when($semester, fn($q) => $q->where('semester', $semester))
+	        ->when($categoryFilter, fn($q) => $q->where('category', $categoryFilter))
+	        ->get();
+
+	    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView(
+	        'matrix.download-pdf',
+	        compact('questions', 'matrixTitle', 'year', 'division', 'color')
+	    )->setPaper('A4', 'landscape');
+
+	    return $pdf->download("Matrix-{$matrixTitle}-{$year}.pdf");
+	}
+
+	public function resultNewFormula(Request $request)
+	{
+	    // Ambil filter dari request
+	    $divisi = $request->get('divisi');
+	    $bulan = strtolower($request->get('bulan'));
+	    $tahunMulai = $request->get('tahun_mulai');
+	    $tahunAkhir = $request->get('tahun_akhir');
+
+	    $queryTable = Question::select(
+	        'id',
+	        'name',
+	        'nik',
+	        'jabatan',
+	        'divisi',
+	        'bulan',
+	        'answers',
+	        'performance',
+	        'potential',
+	        'category',
+	        'description',
+	        'tahun',
+	        'semester'
+	    );
+
+	    // Filter divisi (opsional)
+	    if ($divisi) {
+	        $queryTable->where('divisi', $divisi);
+	    }
+
+	    // Filter bulan (opsional)
+	    if ($bulan) {
+	        $queryTable->where('bulan', $bulan);
+	    }
+
+	    // Filter tahun
+	    if ($tahunMulai && $tahunAkhir) {
+	        $queryTable->whereBetween('tahun', [$tahunMulai, $tahunAkhir]);
+	    } elseif ($tahunMulai) {
+	        $queryTable->where('tahun', $tahunMulai);
+	    }
+
+	    $recordsTable = $queryTable->get();
+
+	    // Olah JSON table → hitung ulang totalMatrix
+	    $resultsTable = $recordsTable->map(function ($item) {
+	        $answers = is_string($item->answers)
+	            ? json_decode($item->answers, true)
+	            : $item->answers;
+
+	        if (!$answers) {
+	            return null;
+	        }
+
+	        // HITUNG ULANG MATRIX SESUAI LOGIC BARU
+	        $performanceRaw = $item->performance;
+	        $potentialRaw   = $item->potential;
+
+	        $performance_weight = ($performanceRaw / 100) * 0.70;
+	        $potential_weight   = ($potentialRaw / 40) * 0.30;
+
+	        $totalMatrix = ($performance_weight + $potential_weight) * 100;
+
+	        return [
+	            'id' => $item->id,
+	            'name' => $item->name,
+	            'nik' => $item->nik,
+	            'jabatan' => $item->jabatan,
+	            'divisi' => $item->divisi,
+	            'bulan' => $item->bulan,
+	            'kualitas_dan_kuantitas' => $performanceRaw,
+	            'sikap_kerja'   => $potentialRaw,
+	            'total_nilai' => round($totalMatrix, 2),
+	            'category' => $item->category,
+	            'description' => $item->description,
+	            'semester' => $item->semester
+	        ];
+	    })->filter();
+
+
+	    // MATRIX SECTION
+	    $queryMatrix = Question::select(
+	        'id',
+	        'name',
+	        'nik',
+	        'jabatan',
+	        'divisi',
+	        'answers',
+	        'performance',
+	        'potential',
+	        'category',
+	        'description',
+	        'tahun'
+	    );
+
+	    // Filter tahun
+	    if ($tahunMulai && $tahunAkhir) {
+	        $queryMatrix->whereBetween('tahun', [$tahunMulai, $tahunAkhir]);
+	    } elseif ($tahunMulai) {
+	        $queryMatrix->where('tahun', $tahunMulai);
+	    }
+
+	    if ($divisi) {
+	        $queryMatrix->where('divisi', $divisi);
+	    }
+
+	    $recordsMatrix = $queryMatrix->get();
+
+	    $resultsMatrix = $recordsMatrix->map(function ($item) {
+	        $performanceRaw = $item->performance;
+	        $potentialRaw   = $item->potential;
+
+	        $performance_weight = ($performanceRaw / 100) * 0.70;
+	        $potential_weight   = ($potentialRaw / 40) * 0.30;
+
+	        $totalMatrix = ($performance_weight + $potential_weight) * 100;
+
+	        return [
+	            'id' => $item->id,
+	            'name' => $item->name,
+	            'nik' => $item->nik,
+	            'jabatan' => $item->jabatan,
+	            'divisi' => $item->divisi,
+	            'performance' => $performanceRaw,
+	            'potential' => $potentialRaw,
+	            'total_nilai' => round($totalMatrix, 2),
+	            'category' => $item->category,
+	            'description' => $item->description,
+	        ];
+	    })->filter();
+
+	    // Hitung kategori
+	    $categoryCounts = $resultsMatrix->groupBy('category')->map->count();
+
+	    // Kategori baru
+	    $allCategories = [
+	        'Best',
+	        'Average',
+	        'Worst'
+	    ];
+
+	    $categoryCountsFinal = [];
+	    foreach ($allCategories as $cat) {
+	        $categoryCountsFinal[$cat] = $categoryCounts[$cat] ?? 0;
+	    }
+
+	    $divisions = Question::select('divisi')->distinct()->pluck('divisi');
+	    $bulans = Question::select('bulan')->distinct()->pluck('bulan');
+
+		$divisionsList = self::divisi();
+
+	    return view('questions.result-new-formula', [
+	        'results' => $resultsTable,              
+	        'categoryCountsFinal' => $categoryCountsFinal,
+	        'divisions' => $divisions,
+	        'bulans' => $bulans,
+			'divisions_list' => $divisionsList
+	    ]);
 	}
 }
