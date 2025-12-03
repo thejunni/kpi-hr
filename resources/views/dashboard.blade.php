@@ -52,7 +52,7 @@
 					</div>
 					<h5 class="fw-bold">Hasil Penilaian</h5>
 					<p class="text-muted">Lihat rekap & hasil evaluasi karyawan.</p>
-					<a href="{{ route('questions.result') }}" class="btn btn-dark text-gold">Lihat Hasil</a>
+					<a href="{{ route('questions.result-new-formula') }}" class="btn btn-dark text-gold">Lihat Hasil</a>
 				</div>
 			</div>
 		</div>
